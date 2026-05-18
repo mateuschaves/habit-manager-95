@@ -1,148 +1,374 @@
+<div align="center">
+
+<img src="./assets/icon.png" width="128" alt="Habit Manager 95"/>
+
 # Habit Manager 95
 
-> Um rastreador de hábitos com a cara do Windows 95. Seus hábitos são
-> **processos**, sua sequência é **uptime**, e perder a sequência derruba
-> o sistema numa bela **tela azul da morte**.
+**Hábitos como processos.**
 
-Habit Manager 95 transforma o ritual de criar e manter hábitos numa
-experiência nostálgica de desktop retrô: boot via BIOS/POST, Gerenciador
-de Tarefas com abas, Painel de Controle, assistentes de configuração e
-até backup para disquete `A:\`. Por baixo da estética, é um app de
-hábitos completo — frequências, lembretes, sequências (streaks),
-estatísticas e histórico — feito em Expo / React Native.
+Um habit tracker que parece o Gerenciador de Tarefas do Windows 95.<br/>
+Cada hábito é um `.exe`. Streak quebrado retorna um BSOD.<br/>
+Sem cloud, sem culpa, sem mascote.
+
+<br/>
+
+[![Expo](https://img.shields.io/badge/Expo-55-000020?style=flat-square&logo=expo&logoColor=white)](https://expo.dev)
+[![React Native](https://img.shields.io/badge/React_Native-0.83-61dafb?style=flat-square&logo=react&logoColor=000)](https://reactnative.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Tests](https://img.shields.io/badge/tests-88_passing-00ff7a?style=flat-square)](#tests)
+[![License](https://img.shields.io/badge/license-MIT-c0c0c0?style=flat-square)](#licença)
+
+<sub>`> taskmgr` para a sua vida.</sub>
+
+</div>
 
 ---
 
-## A metáfora
+A maioria dos habit trackers é motivacional e clean (Streaks, Habitica, Way of Life).
+Esse aqui é deliberadamente **seco, irônico e visualmente nostálgico**.
+Quebrar um streak num app fofinho dá culpa; receber um *"Não Está Respondendo"* dá risada — e, paradoxalmente, engaja mais porque é altamente compartilhável.
+Cada screenshot é conteúdo.
 
-| No app                         | No Windows 95                          |
-| ------------------------------ | -------------------------------------- |
-| Hábito                         | Processo (`habito.exe`)                |
-| Marcar como feito              | Processo concluído                     |
-| Sequência (streak)             | Uptime do processo                     |
-| Sequência quebrada             | **BSOD** — erro fatal, streak perdido  |
-| Lista de hábitos / estatísticas| Abas do Gerenciador de Tarefas         |
-| Configurações                  | Painel de Controle + diálogos          |
-| Primeira execução              | Splash de BIOS/POST + assistente       |
-| Exportar dados                 | Assistente de Backup (disquete 3½)     |
+---
 
-## Funcionalidades
+## Sumário
 
-- **Gerenciador de Tarefas** com quatro abas: Processos, Aplicativos,
-  Desempenho e Histórico.
-- **Onboarding** estilo assistente do Windows, com modelos de hábitos
-  prontos e criação de hábitos personalizados.
-- **Frequências**: diária, semanal (N vezes por semana) ou
-  personalizada (dias específicos da semana).
-- **Lembretes** locais via `expo-notifications`, com janela de
-  silêncio e prioridade por hábito.
-- **Sequências e estatísticas**: streak atual, melhor streak, taxa de
-  adesão (últimos 14 dias) e barra de "energia".
-- **Tela azul da morte (BSOD)** disparada automaticamente quando uma
-  sequência é quebrada.
-- **Persistência local** com SQLite (`expo-sqlite`), com _fallback_
-  automático para um store em memória quando o SQLite não está
-  disponível (ex.: web).
-- **Temas** fiéis à época: Classic, Plum, Hot Dog Stand e Alto
-  Contraste, além de controles de brilho e profundidade de cor.
-- **Internacionalização**: Português (BR) e Inglês (US), com pt-BR
-  como idioma padrão.
-- **Diálogos do Painel de Controle**: Notificações, Aparência, Backup,
-  Data/Hora, Vídeo e Ajuda.
+- [Conheça o app — cinco telas](#conheça-o-app--cinco-telas)
+- [Stack](#stack)
+- [Começando](#começando)
+- [Scripts](#scripts)
+- [Arquitetura](#arquitetura)
+- [Estrutura de pastas](#estrutura-de-pastas)
+- [Princípios de design](#princípios-de-design)
+- [Roadmap](#roadmap)
+- [Créditos](#créditos)
+- [Licença](#licença)
+
+---
+
+## Conheça o app — cinco telas
+
+> Cinco mockups, mesmas cinco mensagens do listing do App Store.
+
+### 01 · Gerencie hábitos como processos
+
+> Cada hábito vira um `.exe` rodando no seu sistema operacional pessoal.
+
+```
++========================================+
+|  Gerenciador de Hábitos       _ [] X  |
++========================================+
+| Arquivo  Opções  Exibir  Janela  Ajuda |
++----------------------------------------+
+| [Aplicativos][PROCESSOS][Desemp.][Hist]|
++----------------------------------------+
+| Imagem         PID   Memória   Status  |
+|----------------------------------------|
+| [@] meditar.exe 1024  64 KB   Rodando  |
+| [@] correr.exe  1025  32 KB   Concluído|
+| [@] ler.exe     1026  16 KB   Pendente |
+| [@] agua.exe    1027 128 KB   Travou   |
+| [#] system.idle 0000   1 KB   Rodando  |
+|----------------------------------------|
+| CPU: 62%  |  Mem: 240 KB / inf  |  T:5 |
++----------------------------------------+
+|   [Prioridade...] [Props.] [Encerrar]  |
++========================================+
+```
+
+<sub>**taskmgr para a sua vida.**</sub>
+
+---
+
+### 02 · Seu hábito não está respondendo
+
+> Streaks quebrados retornam um BSOD. Não dá culpa — dá risada. E é altamente compartilhável.
+
+```
+########################################
+##                                    ##
+##  [ Habit Manager ]                  #
+##                                    ##
+##  Um erro fatal ocorreu em           #
+##  meditar.exe. Streak de 12 dias    ##
+##  foi perdido.                      ##
+##                                    ##
+##  A culpa é compartilhada entre o    #
+##  sistema operacional (você) e o    ##
+##  subprocesso (também você).        ##
+##                                    ##
+##  *  Verifique se o lembrete está   ##
+##     agendado corretamente          ##
+##  *  Reduza a meta para um valor    ##
+##     sustentável                    ##
+##  *  Considere habit stacking       ##
+##                                    ##
+##  Toque qualquer lugar da tela      ##
+##  para continuar _                  ##
+##                                    ##
+########################################
+```
+
+<sub>**O cliente já tirou print.**</sub>
+
+---
+
+### 03 · Performance monitor pra sua vida
+
+> Consistência, foco, streaks. Em verde-fósforo, sobre fundo preto.
+
+```
++========================================+
+|  grafico.exe                  _ [] X  |
++========================================+
+|                                        |
+|  CONSISTÊNCIA — últimas 12 semanas    |
+|  X . X X . X X X . . X X               |
+|  X X . X X X X . X X X .               |
+|  . X X X X . X X X . X X               |
+|                                        |
+|  FOCO (7 dias)        .,:;|||;:.       |
+|                                        |
+|  Streak médio:         4 dias          |
+|  Maior ativo:         12 dias          |
+|  Taxa semanal:        86 %             |
+|  Travamentos:          2               |
+|  Hábitos ativos:       5               |
+|                                        |
++========================================+
+```
+
+<sub>**`grafico.exe`** — verde-fósforo, fundo preto.</sub>
+
+---
+
+### 04 · Setup wizard em cinco minutos
+
+> Escolha do catálogo, personalize cada `.exe`, agende lembretes. Sem cadastro. Sem login social.
+
+```
++========================================+
+|  Setup do Habit Manager 95      _ [] X|
++========================================+
+| +--------+ +---------------------------+
+| |  1.    | | Propriedades de cada     |
+| |  2.    | | hábito                   |
+| | >3.<   | |                          |
+| |  4.    | | Nome:     meditar___ .exe |
+| |        | | Ícone:    [@][#][$][&][!] |
+| |        | | Freq:    (o) Diário      |
+| |        | |          ( ) Semanal     |
+| |        | |          ( ) Dias espec. |
+| |        | | Lembrete: [ 07:00    | v]|
+| |        | | [x] Avisar se atrasado   |
+| +--------+ +---------------------------+
+|                                        |
+|  [ < Voltar ]  [ Avançar > ]   [ Sair ]|
++========================================+
+```
+
+<sub>**`A:\install.exe`** — cinco minutos do começo ao fim.</sub>
+
+---
+
+### 05 · Tudo offline. Tudo seu.
+
+> Sem cloud. Sem ads. Sem mascote. Seu histórico mora em SQLite no seu telefone — e em lugar nenhum mais.
+
+```
++========================================+
+|  Painel de Controle              _ X  |
++========================================+
+|                                        |
+|  [B]      [G]      [F]      [C]        |
+|  Notif.   Aparên.  Backup   Data/Hora  |
+|                                        |
+|  [M]      [E]      [T]      [H]        |
+|  Tela     Add      Reciclag Ajuda      |
+|           Hábito                       |
+|                                        |
+|  [I]                                   |
+|  Sobre                                 |
+|                                        |
+| +-- Aparência ---------------------+   |
+| | Tema:     [ Classic Win95   | v] |   |
+| | Idioma:   [ Português (BR)  | v] |   |
+| | [x] Avisar processos atrasados   |   |
+| +----------------------------------+   |
+|                                        |
+| +-- Manutenção --------------------+   |
+| | [ Repetir setup... ]             |   |
+| | [ Restaurar config. de fábrica ] |   |
+| +----------------------------------+   |
++========================================+
+```
+
+<sub>**`C:\users\voce`** — sem cloud, sem ads, sem mascote.</sub>
+
+---
 
 ## Stack
 
-- [Expo](https://expo.dev/) SDK 55 + React Native 0.83
-- React 19 + TypeScript (modo `strict`)
-- [React Navigation](https://reactnavigation.org/) (native stack)
-- [styled-components](https://styled-components.com/) para temas
-- `expo-sqlite`, `expo-notifications`, `expo-font`
-- Fontes pixeladas: Pixelify Sans e VT323
-- Jest + `jest-expo` + Testing Library para testes
+| Camada | Tecnologia |
+|---|---|
+| Runtime | **Expo 55** + **React Native 0.83** |
+| Linguagem | **TypeScript 5.9** |
+| Estado / persistência | React Context + **expo-sqlite** (fallback `MemoryHabitStore` para web/testes) |
+| Notificações | **expo-notifications** — single-source-of-truth via `syncAllHabits` |
+| Styling | **styled-components/native** + tema dinâmico por paleta |
+| Fontes | **Pixelify Sans** (UI) + **VT323** (monospace) via `@expo-google-fonts` |
+| Navegação | **@react-navigation/native-stack** |
+| Internacionalização | dicionário tipado (`pt-BR` + `en-US`) com fallback automático |
+| Testes | **Jest** + `@testing-library/react-native` — 88 testes |
 
-## Pré-requisitos
+---
 
-- Node.js 18+ e npm
-- [Expo CLI](https://docs.expo.dev/) (via `npx expo`)
-- App **Expo Go** ou um emulador Android / simulador iOS
+## Começando
 
-## Como rodar
+Você vai precisar de Node 20+, [Expo CLI](https://docs.expo.dev/get-started/installation/) e Xcode/Android Studio para os simuladores.
 
 ```bash
-# instalar dependências
+git clone https://github.com/mateuschaves/habit-manager-05.git
+cd habit-manager-05
 npm install
 
-# iniciar o servidor de desenvolvimento
-npm start
-
-# ou direto numa plataforma
-npm run android
-npm run ios
-npm run web
+npm start          # Metro bundler
+npm run ios        # simulador iOS
+npm run android    # emulador / device
+npm run web        # versão web (sem SQLite — usa fallback in-memory)
 ```
 
-Escaneie o QR code com o Expo Go ou abra num emulador.
+Primeira execução roda o **Setup Wizard** (4 passos). Ele instala alguns hábitos do catálogo no seu SQLite local. Sem cadastro, sem login social, sem opt-in de analytics — porque não tem analytics.
+
+---
 
 ## Scripts
 
-| Comando              | Descrição                                  |
-| -------------------- | ------------------------------------------ |
-| `npm start`          | Inicia o servidor de desenvolvimento Expo  |
-| `npm run android`    | Abre no Android                            |
-| `npm run ios`        | Abre no iOS                                 |
-| `npm run web`        | Abre no navegador                          |
-| `npm test`           | Roda a suíte de testes (Jest)              |
-| `npm run test:watch` | Roda os testes em modo _watch_             |
-| `npm run typecheck`  | Checagem de tipos com `tsc --noEmit`       |
-
-## Estrutura do projeto
-
-```
-.
-├── App.tsx                 # Providers (tema, settings, hábitos) e boot
-├── index.ts                # Entry point Expo
-├── src/
-│   ├── navigation/         # Stack de navegação e rotas
-│   ├── features/
-│   │   ├── habits/         # Telas do "Gerenciador de Tarefas"
-│   │   ├── onboarding/     # Splash de BIOS + assistente
-│   │   └── system/         # Diálogos do Painel de Controle, BSOD, Sobre
-│   └── shared/
-│       ├── components/win95 # Biblioteca de UI estilo Win95
-│       ├── context/        # HabitsContext, SettingsContext
-│       ├── db/             # Stores SQLite e em memória
-│       ├── i18n/           # Dicionários pt-BR / en-US
-│       ├── theme/          # Paletas e construção do tema
-│       └── utils/          # Datas e cálculo de streaks
+```bash
+npm start          # Expo dev server
+npm run ios        # build + abre no simulador iOS
+npm run android    # build + abre no emulador Android
+npm run web        # versão web (fallback in-memory)
+npm test           # roda os 88 testes
+npm run test:watch # Jest watch mode
+npm run typecheck  # tsc --noEmit
 ```
 
-Imports usam o alias `@/` apontando para `src/` (configurado em
-`tsconfig.json` e no Jest).
+---
 
-## Notas de arquitetura
+## Arquitetura
 
-- **Camada de dados** — `createDefaultStore()` tenta abrir o SQLite e,
-  em caso de falha, cai para um store em memória, para que o app
-  continue utilizável em vez de quebrar.
-- **BSOD** — um observador na camada de navegação (`BsodWatcher`)
-  escuta o `HabitsContext` e, ao detectar uma sequência recém-quebrada
-  na tela principal, navega para a tela azul.
-- **Tema** — `SettingsContext` guarda a paleta, brilho e profundidade
-  de cor; `App.tsx` aplica sobreposições para simular o "botão de
-  brilho" e o seletor de profundidade de cor de um monitor da época.
-- **i18n** — `translate()` resolve a chave no idioma escolhido com
-  _fallback_ para pt-BR e, por fim, para a própria chave.
+Tudo gira em torno de dois contextos e uma store.
 
-## Testes
+```
++----------------+      +---------------------+
+| SettingsContext| <--> | AsyncStorage         |
+|  - palette     |      |  @hm95/settings      |
+|  - language    |      +---------------------+
+|  - brightness  |
+|  - colorDepth  |
++----------------+
+        v
++----------------+      +---------------------+
+| HabitsContext  | <--> | HabitStore           |
+|  - habits      |      |  +- SqliteHabitStore |
+|  - completions |      |  +- MemoryHabitStore |  (fallback)
+|  - stats       |      +---------------------+
+|  - clearAll    |
++--------+-------+
+         |
+         v
+   syncAllHabits(habits)  ->  expo-notifications
+   (single-source-of-truth: cancela tudo + reagenda)
+```
+
+**Por que dois contextos.** Settings é leve e quase sempre ativo (theme, idioma). Habits faz I/O em SQLite e tem stats derivados via `useMemo`. Separar evita re-render desnecessário do app inteiro quando você muda só a paleta.
+
+**Por que single-source-of-truth para notificações.** O `useEffect([habits, loading])` dentro do `HabitsContext` chama `syncAllHabits` cada vez que a lista muda. Isso cancela todos os reminders e re-agenda — evita orphan notifications depois de delete/edit. Caro? Não, porque hábitos são poucos. Confiável? Sim.
+
+**Por que MemoryHabitStore como fallback.** Em web, `expo-sqlite` não funciona. Em testes, ele atrapalha. `createDefaultStore()` detecta runtime e faz o downgrade graceful — sem `if (Platform.OS === 'web')` espalhado pelo código.
+
+---
+
+## Estrutura de pastas
+
+```
+src/
+├── features/
+│   ├── habits/                # Processos, Aplicativos, Desempenho, Histórico
+│   │   ├── components/
+│   │   ├── context/MainTabContext/
+│   │   └── screens/
+│   ├── onboarding/            # Splash + Setup Wizard
+│   │   ├── hooks/useOnboarding.ts
+│   │   └── screens/
+│   └── system/                # Painel de Controle, BSOD, Sobre
+│       └── screens/
+│           ├── BackupDialog/
+│           ├── AppearanceDialog/
+│           ├── DateTimeDialog/
+│           ├── DisplayDialog/
+│           ├── HelpDialog/
+│           ├── NotificationsDialog/
+│           ├── SettingsScreen/
+│           ├── AboutScreen/
+│           └── BsodScreen/
+├── navigation/                # RootNavigator + types
+├── shared/
+│   ├── components/win95/      # Win95Window, Win95Button, Win95Select, ...
+│   ├── components/icons/      # ícones pixel-art 14/16/32 px
+│   ├── context/               # SettingsContext, HabitsContext
+│   ├── db/                    # HabitStore + sqliteStore + memoryStore
+│   ├── i18n/                  # pt-BR.ts (source of truth) + en-US.ts
+│   ├── notifications/         # syncAllHabits, ensurePermissions
+│   ├── theme/                 # palettes + tokens
+│   ├── utils/                 # date, streak engine
+│   └── hooks/                 # useTranslation
+└── test/                      # renderWithProviders + fixtures
+```
+
+---
+
+## Princípios de design
+
+- **Paleta clássica Win95.** `#c0c0c0` como base, `#000080` como destaque, BSOD `#0000aa`. Sem gradientes suaves, sem glassmorphism, sem corner radius.
+- **Bordas chanfradas 3D.** Toda superfície é `Bezel` com variant `raised`, `inset`, `pressed` ou `thinInset`. Botão pressionado **inverte** a chanfradura — não muda só a cor.
+- **Tipografia bitmap.** `Pixelify Sans` para UI, `VT323` para monospace. Sem light/semibold — só regular e bold.
+- **Mobile-first sem perder o vocabulário desktop.** Bottom-less, sem multi-window real, mas com title bars, menu bar e barra de tarefas. Botão Iniciar abre o Painel de Controle.
+- **Mensagens de erro com humor.** O BSOD diz literalmente *"A culpa é compartilhada entre o sistema operacional (você) e o subprocesso (também você)."* — porque sim.
+- **Offline-first, real.** Tudo persiste em SQLite local + AsyncStorage para settings. Backup é via `Share.share()` (JSON nativo do iOS). Zero requests para servidor.
+
+---
+
+## Roadmap
+
+- **v1.0** — MVP atual: CRUD de hábitos, streaks, BSOD, Painel de Controle completo, backup via Share, i18n PT/EN
+- **v1.1** — Tema "Win98" alternativo + mais paletas (NT, Plus!, BeOS)
+- **v1.2** — Widget de Home Screen estilo "atalho do desktop"
+- **v1.3** — Restauração de backup (DocumentPicker) — hoje só exporta
+- **v2.0** — Modo paisagem com painel "Resource Monitor" expandido
+
+---
+
+## Tests
 
 ```bash
 npm test
 ```
 
-Cobrem utilitários de data e streak, stores, i18n, contextos e os
-componentes da biblioteca Win95.
+Cobre engine de streaks (determinístico, com fixtures), sync de notificações, persistência (memory + sqlite), reducers de Settings/Habits contexts, fluxo de onboarding, splash BIOS, componentes Win95 (Bezel, Button, Status), i18n. **88 testes verdes.** O typecheck (`tsc --noEmit`) também passa limpo.
+
+---
+
+## Créditos
+
+- Design system + screenshots do App Store gerados via [claude.ai/design](https://claude.ai/design)
+- Fontes [Pixelify Sans](https://fonts.google.com/specimen/Pixelify+Sans) e [VT323](https://fonts.google.com/specimen/VT323) (Google Fonts)
+- Componentes Win95 reimplementados do zero em RN para esse projeto — inspirados em [React95](https://github.com/React95/React95)
+- Inspiração geral: Microsoft, 1995–1999
+
+---
 
 ## Licença
 
-Projeto privado / experimental. © 1995–2026 Habit Industries Inc.
-(brincadeira — todos os direitos reservados ao autor do repositório).
+[MIT](./LICENSE). Por que reservar copyright em algo que parece pirataria de 1996.
