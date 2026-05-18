@@ -14,6 +14,12 @@ import { OnboardingWizard } from '@/features/onboarding/screens/OnboardingWizard
 import { BsodScreen } from '@/features/system/screens/BsodScreen';
 import { SettingsScreen } from '@/features/system/screens/SettingsScreen';
 import { AboutScreen } from '@/features/system/screens/AboutScreen';
+import { NotificationsDialog } from '@/features/system/screens/NotificationsDialog';
+import { AppearanceDialog } from '@/features/system/screens/AppearanceDialog';
+import { BackupDialog } from '@/features/system/screens/BackupDialog';
+import { DateTimeDialog } from '@/features/system/screens/DateTimeDialog';
+import { DisplayDialog } from '@/features/system/screens/DisplayDialog';
+import { HelpDialog } from '@/features/system/screens/HelpDialog';
 import { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -78,6 +84,36 @@ export function RootNavigator() {
         />
         <Stack.Screen name="Settings" component={SettingsScreen} />
         <Stack.Screen name="About" component={AboutScreen} />
+        <Stack.Screen
+          name="CfgNotifications"
+          component={NotificationsDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="CfgAppearance"
+          component={AppearanceDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="CfgBackup"
+          component={BackupDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="CfgDateTime"
+          component={DateTimeDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="CfgDisplay"
+          component={DisplayDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
+        <Stack.Screen
+          name="CfgHelp"
+          component={HelpDialog}
+          options={{ presentation: 'transparentModal', animation: 'fade' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

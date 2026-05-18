@@ -19,3 +19,4 @@ export type { HeaderColumn } from './Win95ColHeaders';
 export { Win95GroupBox } from './Win95GroupBox';
 export { Win95Taskbar } from './Win95Taskbar';
 export { Win95Desktop } from './Win95Desktop';
+export { Win95DialogShell } from './Win95DialogShell';

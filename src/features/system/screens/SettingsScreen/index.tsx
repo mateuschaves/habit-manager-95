@@ -69,11 +69,31 @@ export function SettingsScreen() {
   }
 
   const items = [
-    { icon: <IconBell size={32} />, label: t('settings.notifications') },
-    { icon: <IconGear size={32} />, label: t('settings.appearance') },
-    { icon: <IconFloppy size={32} />, label: t('settings.backup') },
-    { icon: <IconCalendar size={32} />, label: t('settings.datetime') },
-    { icon: <IconMonitor size={32} />, label: t('settings.screen') },
+    {
+      icon: <IconBell size={32} />,
+      label: t('settings.notifications'),
+      onPress: () => navigation.navigate('CfgNotifications'),
+    },
+    {
+      icon: <IconGear size={32} />,
+      label: t('settings.appearance'),
+      onPress: () => navigation.navigate('CfgAppearance'),
+    },
+    {
+      icon: <IconFloppy size={32} />,
+      label: t('settings.backup'),
+      onPress: () => navigation.navigate('CfgBackup'),
+    },
+    {
+      icon: <IconCalendar size={32} />,
+      label: t('settings.datetime'),
+      onPress: () => navigation.navigate('CfgDateTime'),
+    },
+    {
+      icon: <IconMonitor size={32} />,
+      label: t('settings.screen'),
+      onPress: () => navigation.navigate('CfgDisplay'),
+    },
     {
       icon: <IconExe size={32} />,
       label: t('settings.addHabit'),
@@ -84,7 +104,11 @@ export function SettingsScreen() {
       label: t('settings.recycle'),
       onPress: emptyRecycle,
     },
-    { icon: <IconHelp size={32} />, label: t('settings.help') },
+    {
+      icon: <IconHelp size={32} />,
+      label: t('settings.help'),
+      onPress: () => navigation.navigate('CfgHelp'),
+    },
     {
       icon: <IconInfo size={32} />,
       label: t('settings.about'),

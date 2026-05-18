@@ -7,4 +7,10 @@ export type RootStackParamList = {
   Bsod: undefined;
   Settings: undefined;
   About: undefined;
+  CfgNotifications: undefined;
+  CfgAppearance: undefined;
+  CfgBackup: undefined;
+  CfgDateTime: undefined;
+  CfgDisplay: undefined;
+  CfgHelp: undefined;
 };
