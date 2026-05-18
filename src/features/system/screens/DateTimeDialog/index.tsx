@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -52,13 +52,33 @@ function daysInMonth(year: number, month: number) {
 export function DateTimeDialog() {
   const { t } = useTranslation();
   const navigation = useNavigation();
-  const now = new Date();
+  const [now, setNow] = useState(() => new Date());
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
   const [day, setDay] = useState(now.getDate());
   const [tab, setTab] = useState(0);
   const [ntp, setNtp] = useState(true);
   const [dst, setDst] = useState(false);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  function applyAndStay() {
+    Alert.alert(
+      t('cfg.dateTime.systemClockTitle'),
+      t('cfg.dateTime.systemClockBody')
+    );
+  }
+
+  function applyAndClose() {
+    Alert.alert(
+      t('cfg.dateTime.systemClockTitle'),
+      t('cfg.dateTime.systemClockBody'),
+      [{ text: t('btn.ok'), onPress: () => navigation.goBack() }]
+    );
+  }
 
   const firstDow = new Date(year, month, 1).getDay();
   const total = daysInMonth(year, month);
@@ -200,15 +220,21 @@ export function DateTimeDialog() {
           <Win95Button
             label={t('btn.ok')}
             primary
-            onPress={() => navigation.goBack()}
+            onPress={applyAndClose}
             style={{ marginRight: 4 }}
+            testID="datetime-ok"
           />
           <Win95Button
             label={t('btn.cancel')}
             onPress={() => navigation.goBack()}
             style={{ marginRight: 4 }}
+            testID="datetime-cancel"
           />
-          <Win95Button label={t('btn.apply')} />
+          <Win95Button
+            label={t('btn.apply')}
+            onPress={applyAndStay}
+            testID="datetime-apply"
+          />
         </Footer>
       </Win95TabPane>
     </Win95DialogShell>

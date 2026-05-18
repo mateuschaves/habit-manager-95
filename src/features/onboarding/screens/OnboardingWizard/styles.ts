@@ -88,6 +88,14 @@ export const DraftItem = styled.Pressable<{ $active?: boolean }>`
     $active ? theme.colors.selectionBg : 'transparent'};
 `;
 
+export const DraftRemove = styled.Pressable`
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 3px;
+`;
+
 export const NewDraft = styled.Pressable`
   flex-direction: row;
   align-items: center;

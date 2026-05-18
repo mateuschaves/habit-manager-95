@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Alert, Share, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -12,7 +12,10 @@ import {
   Win95Text,
 } from '@/shared/components/win95';
 import { IconFile, IconFloppy } from '@/shared/components/icons';
+import { useHabits } from '@/shared/context/HabitsContext';
+import { useSettings } from '@/shared/context/SettingsContext';
 import { useTranslation } from '@/shared/hooks/useTranslation';
+import { APP_VERSION } from '@/shared/constants';
 import {
   Eta,
   FileName,
@@ -41,18 +44,99 @@ const FILES: BackupFile[] = [
 ];
 
 type Dest = 'floppy' | 'cloud' | 'share';
+type Status = 'idle' | 'exporting' | 'done' | 'error';
 
 export function BackupDialog() {
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const { habits, completions } = useHabits();
+  const settings = useSettings();
   const [checked, setChecked] = useState<Record<string, boolean>>(
     Object.fromEntries(FILES.map((f) => [f.name, f.default]))
   );
-  const [dest, setDest] = useState<Dest>('floppy');
+  const [dest, setDest] = useState<Dest>('share');
+  const [status, setStatus] = useState<Status>('idle');
+  const [progress, setProgress] = useState(0);
+  const [currentFile, setCurrentFile] = useState<string>('');
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const selectedCount = Object.values(checked).filter(Boolean).length;
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  const selectedFiles = FILES.filter((f) => checked[f.name]);
+  const selectedCount = selectedFiles.length;
   const today = new Date();
   const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+  function statusMessage(): string {
+    if (status === 'exporting') {
+      return t('cfg.backup.status.exporting', { file: currentFile });
+    }
+    if (status === 'done') return t('cfg.backup.status.done');
+    if (status === 'error') return t('cfg.backup.status.error');
+    return t('cfg.backup.status.idle');
+  }
+
+  async function start() {
+    if (selectedCount === 0) {
+      Alert.alert(t('cfg.backup.title'), t('cfg.backup.emptySelection'));
+      return;
+    }
+    setStatus('exporting');
+    setProgress(0);
+
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    let step = 0;
+    intervalRef.current = setInterval(() => {
+      step += 1;
+      const idx = Math.min(selectedFiles.length - 1, Math.floor(step / 4));
+      setCurrentFile(selectedFiles[idx].name);
+      const next = Math.min(100, step * 6);
+      setProgress(next);
+      if (next >= 100 && intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }, 90);
+
+    try {
+      const payload = {
+        version: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        files: selectedFiles.map((f) => f.name),
+        settings: {
+          palette: settings.palette,
+          language: settings.language,
+          notifyLate: settings.notifyLate,
+          brightness: settings.brightness,
+          colorDepth: settings.colorDepth,
+        },
+        habits,
+        completions,
+      };
+      const json = JSON.stringify(payload, null, 2);
+      await Share.share({
+        title: t('cfg.backup.shareTitle'),
+        message: json,
+      });
+      setStatus('done');
+      setProgress(100);
+    } catch {
+      setStatus('error');
+    } finally {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }
+  }
+
+  function restore() {
+    Alert.alert(t('cfg.backup.restoreTitle'), t('cfg.backup.restoreBody'));
+  }
 
   return (
     <Win95DialogShell
@@ -130,13 +214,17 @@ export function BackupDialog() {
 
       <View style={{ marginTop: 8 }}>
         <Win95Text variant="caption" style={{ marginBottom: 3 }}>
-          {t('cfg.backup.copying', { file: 'history.db' })}
+          {statusMessage()}
         </Win95Text>
-        <Win95Progress value={62} />
+        <Win95Progress value={progress} />
         <Eta>
-          <Win95Text variant="caption">3 / 4</Win95Text>
           <Win95Text variant="caption">
-            {t('cfg.backup.eta', { n: 2 })}
+            {Math.min(selectedCount, Math.ceil((progress / 100) * selectedCount))} / {selectedCount}
+          </Win95Text>
+          <Win95Text variant="caption">
+            {status === 'exporting'
+              ? t('cfg.backup.eta', { n: Math.max(0, Math.ceil((100 - progress) / 20)) })
+              : ''}
           </Win95Text>
         </Eta>
       </View>
@@ -146,12 +234,22 @@ export function BackupDialog() {
           label={t('cfg.backup.start')}
           icon={<IconFloppy size={12} />}
           primary
+          onPress={start}
+          disabled={status === 'exporting'}
           style={{ marginRight: 4 }}
+          testID="backup-start"
         />
-        <Win95Button label={t('cfg.backup.restore')} style={{ marginRight: 4 }} />
+        <Win95Button
+          label={t('cfg.backup.restore')}
+          onPress={restore}
+          disabled={status === 'exporting'}
+          style={{ marginRight: 4 }}
+          testID="backup-restore"
+        />
         <Win95Button
           label={t('btn.cancel')}
           onPress={() => navigation.goBack()}
+          testID="backup-cancel"
         />
       </Footer>
     </Win95DialogShell>

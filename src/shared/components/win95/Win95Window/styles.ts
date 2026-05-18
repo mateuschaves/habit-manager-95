@@ -25,7 +25,7 @@ export const Controls = styled.View`
   flex-direction: row;
 `;
 
-export const ControlButton = styled.View`
+export const ControlButton = styled.Pressable`
   width: 18px;
   height: 16px;
   margin-left: 2px;

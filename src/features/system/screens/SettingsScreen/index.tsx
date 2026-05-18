@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -62,11 +62,51 @@ export function SettingsScreen() {
         style: 'destructive',
         onPress: async () => {
           await clearAll();
-          resetSettings();
           Alert.alert(t('settings.resetTitle'), t('settings.resetDone'));
         },
       },
     ]);
+  }
+
+  function factoryReset() {
+    Alert.alert(
+      t('settings.factoryConfirmTitle'),
+      t('settings.factoryConfirmBody'),
+      [
+        { text: t('btn.cancel'), style: 'cancel' },
+        {
+          text: t('btn.ok'),
+          onPress: () => {
+            resetSettings();
+            Alert.alert(
+              t('settings.factoryConfirmTitle'),
+              t('settings.factoryDone')
+            );
+          },
+        },
+      ]
+    );
+  }
+
+  function rerunSetup() {
+    Alert.alert(
+      t('settings.rerunConfirmTitle'),
+      t('settings.rerunConfirmBody'),
+      [
+        { text: t('btn.cancel'), style: 'cancel' },
+        {
+          text: t('btn.ok'),
+          style: 'destructive',
+          onPress: async () => {
+            await clearAll();
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Onboarding' }],
+            });
+          },
+        },
+      ]
+    );
   }
 
   const items = [
@@ -188,14 +228,21 @@ export function SettingsScreen() {
             <Win95GroupBox title={t('settings.maintenance')}>
               <Win95Button
                 label={t('settings.rerunSetup')}
-                onPress={() =>
-                  navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Onboarding' }],
-                  })
-                }
+                onPress={rerunSetup}
                 testID="settings-rerun-setup"
               />
+              <View style={{ marginTop: 6 }}>
+                <Win95Text variant="caption" color="#404040">
+                  {t('settings.rerunSetupDesc')}
+                </Win95Text>
+              </View>
+              <View style={{ marginTop: 10 }}>
+                <Win95Button
+                  label={t('settings.factoryReset')}
+                  onPress={factoryReset}
+                  testID="settings-factory-reset"
+                />
+              </View>
             </Win95GroupBox>
           </Panel>
         </ScrollView>

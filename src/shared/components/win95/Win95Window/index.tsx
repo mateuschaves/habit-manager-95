@@ -21,6 +21,8 @@ interface Win95WindowProps {
   /** Stretch the bezel chain so the body can flex:1 in a constrained parent. */
   fill?: boolean;
   onClose?: () => void;
+  onMinimize?: () => void;
+  onMaximize?: () => void;
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   bodyStyle?: StyleProp<ViewStyle>;
@@ -35,11 +37,17 @@ export function Win95Window({
   fullBleed,
   fill,
   onClose,
+  onMinimize,
+  onMaximize,
   children,
   style,
   bodyStyle,
   testID,
 }: Win95WindowProps) {
+  // Decorative controls (no handler passed) are dropped to avoid the dead-button trap.
+  const showMin = controls.includes('min') && !!onMinimize;
+  const showMax = controls.includes('max') && !!onMaximize;
+  const showClose = controls.includes('close') && !!onClose;
   return (
     <Bezel variant="raised" fill={fill} containerStyle={style} testID={testID}>
       <TitleBar $inactive={inactive}>
@@ -50,25 +58,36 @@ export function Win95Window({
           </Win95Text>
         </TitleText>
         <Controls>
-          {controls.includes('min') && (
+          {showMin && (
             <Bezel variant="raised">
-              <ControlButton>
+              <ControlButton
+                accessibilityRole="button"
+                accessibilityLabel="Minimize"
+                onPress={onMinimize}
+                testID={testID ? `${testID}-min` : 'window-min'}
+              >
                 <Win95Text bold>_</Win95Text>
               </ControlButton>
             </Bezel>
           )}
-          {controls.includes('max') && (
+          {showMax && (
             <Bezel variant="raised">
-              <ControlButton>
+              <ControlButton
+                accessibilityRole="button"
+                accessibilityLabel="Maximize"
+                onPress={onMaximize}
+                testID={testID ? `${testID}-max` : 'window-max'}
+              >
                 <Win95Text bold>□</Win95Text>
               </ControlButton>
             </Bezel>
           )}
-          {controls.includes('close') && (
+          {showClose && (
             <Bezel variant="raised">
               <ControlButton
                 accessibilityRole="button"
-                onTouchEnd={onClose}
+                accessibilityLabel="Close"
+                onPress={onClose}
                 testID={testID ? `${testID}-close` : 'window-close'}
               >
                 <IconClose size={9} />

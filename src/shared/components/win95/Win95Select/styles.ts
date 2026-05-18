@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 
-export const SelectRow = styled.View`
+export const SelectRow = styled.Pressable`
   flex-direction: row;
   align-items: center;
   height: 30px;

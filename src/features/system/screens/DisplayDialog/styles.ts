@@ -72,7 +72,7 @@ export const Slider = styled.View`
   justify-content: center;
 `;
 
-export const SliderHit = styled.Pressable`
+export const SliderHit = styled.View`
   flex: 1;
   height: 22px;
   justify-content: center;

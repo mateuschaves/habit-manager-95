@@ -16,7 +16,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.wazowsky.habitmanager95",
       "ascAppId": "6770595838",
-      "appleTeamId": "4KWUX6ULKJ"
+      "appleTeamId": "4KWUX6ULKJ",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.wazowsky.habitmanager95",
@@ -38,6 +41,11 @@
           "color": "#000080"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "15b04b07-208e-4b24-952f-e9b4a3e37586"
+      }
+    }
   }
 }

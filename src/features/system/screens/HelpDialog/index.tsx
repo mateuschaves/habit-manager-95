@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
-import { View } from 'react-native';
+import { Alert, Share, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -90,6 +90,25 @@ export function HelpDialog() {
 
   function toggleFolder(id: string) {
     setOpen((o) => ({ ...o, [id]: !o[id] }));
+  }
+
+  async function onPrint() {
+    if (!activeTopic || !articleBody) {
+      Alert.alert(t('cfg.help.title'), t('cfg.help.printNoTopic'));
+      return;
+    }
+    try {
+      await Share.share({
+        title: t('cfg.help.printShareTitle'),
+        message: `${activeTopic.label}\n\n${articleBody}`,
+      });
+    } catch {
+      // User dismissed the share sheet — nothing to do.
+    }
+  }
+
+  function onAnnotate() {
+    Alert.alert(t('cfg.help.annotateTitle'), t('cfg.help.annotateBody'));
   }
 
   return (
@@ -251,8 +270,18 @@ export function HelpDialog() {
               {t('cfg.help.f1')}
             </Win95Text>
           </HelpHint>
-          <Win95Button label={t('cfg.help.print')} style={{ marginRight: 4 }} />
-          <Win95Button label={t('cfg.help.annotate')} style={{ marginRight: 4 }} />
+          <Win95Button
+            label={t('cfg.help.print')}
+            onPress={onPrint}
+            style={{ marginRight: 4 }}
+            testID="help-print"
+          />
+          <Win95Button
+            label={t('cfg.help.annotate')}
+            onPress={onAnnotate}
+            style={{ marginRight: 4 }}
+            testID="help-annotate"
+          />
           <Win95Button
             label={t('cfg.help.display')}
             primary

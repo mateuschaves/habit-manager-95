@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -105,6 +105,48 @@ export function AplicativosScreen() {
     ? habitsWithStats.find((h) => h.id === selectedId) ?? null
     : null;
 
+  function rowTap(habitId: string) {
+    // Tap on an already-selected row opens its details; otherwise just select.
+    if (selectedId === habitId) {
+      navigation.navigate('HabitDetail', { habitId });
+    } else {
+      setSelectedId(habitId);
+    }
+  }
+
+  function snooze() {
+    if (!selected) return;
+    const name = selected.name;
+    if (!selected.reminderTime) {
+      Alert.alert(t('apps.snoozeTitle'), t('apps.snoozeNoTime', { name }));
+      return;
+    }
+    const [hh, mm] = selected.reminderTime.split(':').map(Number);
+    const total = (hh + 1) * 60 + mm;
+    const newHh = Math.floor((total % (24 * 60)) / 60);
+    const newMm = total % 60;
+    const next = `${String(newHh).padStart(2, '0')}:${String(newMm).padStart(2, '0')}`;
+    Alert.alert(t('apps.snoozeTitle'), t('apps.snoozeDone', { name, time: next }));
+  }
+
+  function skip() {
+    if (!selected) return;
+    const name = selected.name;
+    Alert.alert(
+      t('apps.skipTitle', { name }),
+      t('apps.skipConfirm', { name }),
+      [
+        { text: t('btn.cancel'), style: 'cancel' },
+        {
+          text: t('apps.skip'),
+          style: 'destructive',
+          onPress: () =>
+            Alert.alert(t('apps.skipTitle', { name }), t('apps.skipDone', { name })),
+        },
+      ]
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <IntroRow>
@@ -146,7 +188,7 @@ export function AplicativosScreen() {
                       <Row
                         key={h.id}
                         $selected={isSel}
-                        onPress={() => setSelectedId(h.id)}
+                        onPress={() => rowTap(h.id)}
                         onLongPress={() =>
                           navigation.navigate('HabitDetail', { habitId: h.id })
                         }
@@ -207,12 +249,14 @@ export function AplicativosScreen() {
         <Win95Button
           label={t('apps.postpone')}
           disabled={!selected || selected.stats.completedToday}
+          onPress={snooze}
           style={{ marginRight: 4 }}
           testID="apps-postpone"
         />
         <Win95Button
           label={t('apps.skip')}
           disabled={!selected || selected.stats.completedToday}
+          onPress={skip}
           style={{ marginRight: 4 }}
           testID="apps-skip"
         />

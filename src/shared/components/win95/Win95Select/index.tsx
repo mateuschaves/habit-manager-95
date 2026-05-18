@@ -46,7 +46,12 @@ export function Win95Select({
   return (
     <>
       <Bezel variant="inset" containerStyle={style}>
-        <SelectRow>
+        <SelectRow
+          accessibilityRole="button"
+          accessibilityState={{ expanded: open }}
+          onPress={() => setOpen(true)}
+          testID={testID}
+        >
           <ValueSlot>
             <Win95Text
               numberOfLines={1}
@@ -56,12 +61,7 @@ export function Win95Select({
             </Win95Text>
           </ValueSlot>
           <Bezel variant={open ? 'pressed' : 'raised'}>
-            <Arrow
-              accessibilityRole="button"
-              accessibilityState={{ expanded: open }}
-              onTouchEnd={() => setOpen(true)}
-              testID={testID}
-            >
+            <Arrow>
               <Win95Text variant="caption">▼</Win95Text>
             </Arrow>
           </Bezel>

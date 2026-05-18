@@ -4,14 +4,21 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 import {
   Win95Button,
+  Win95Checkbox,
   Win95Desktop,
   Win95GroupBox,
+  Win95Select,
   Win95TabPane,
   Win95Tabs,
   Win95Text,
   Win95Window,
 } from '@/shared/components/win95';
 import { HabitIcon, IconTrash } from '@/shared/components/icons';
+import {
+  GOAL_UNIT_LABEL_KEYS,
+  GoalUnitKey,
+  REMINDER_TIMES,
+} from '@/shared/constants';
 import { useHabits } from '@/shared/context/HabitsContext';
 import { useTranslation } from '@/shared/hooks/useTranslation';
 import { addDays } from '@/shared/utils/date';
@@ -39,7 +46,7 @@ export function HabitDetailScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Rt>();
-  const { getHabit, completions, deleteHabit, today } = useHabits();
+  const { getHabit, completions, deleteHabit, updateHabit, today } = useHabits();
   const habit = getHabit(route.params.habitId);
   const [tab, setTab] = useState(0);
 
@@ -145,7 +152,12 @@ export function HabitDetailScreen() {
                   <View style={{ marginTop: 8 }}>
                     <Win95GroupBox title={t('field.goal')}>
                       <Win95Text mono>
-                        {habit.goalAmount} {habit.goalUnit ?? ''}
+                        {habit.goalAmount}{' '}
+                        {habit.goalUnit
+                          ? GOAL_UNIT_LABEL_KEYS[habit.goalUnit as GoalUnitKey]
+                            ? t(GOAL_UNIT_LABEL_KEYS[habit.goalUnit as GoalUnitKey])
+                            : habit.goalUnit
+                          : ''}
                       </Win95Text>
                     </Win95GroupBox>
                   </View>
@@ -205,15 +217,30 @@ export function HabitDetailScreen() {
             {tab === 2 && (
               <View>
                 <Win95GroupBox title={t('field.reminder')}>
-                  <Win95Text mono>
-                    {habit.reminderTime ?? t('reminder.none')}
-                  </Win95Text>
+                  <Win95Select
+                    value={habit.reminderTime ?? 'none'}
+                    onChange={(v) =>
+                      updateHabit(habit.id, {
+                        reminderTime: v === 'none' ? null : v,
+                      })
+                    }
+                    options={[
+                      { value: 'none', label: t('reminder.none') },
+                      ...REMINDER_TIMES.map((r) => ({ value: r, label: r })),
+                    ]}
+                    testID="detail-reminder"
+                  />
                 </Win95GroupBox>
                 <View style={{ marginTop: 8 }}>
                   <Win95GroupBox title={t('field.notifyLate')}>
-                    <Win95Text>
-                      {habit.notifyIfLate ? '✓' : '—'}
-                    </Win95Text>
+                    <Win95Checkbox
+                      checked={habit.notifyIfLate}
+                      onToggle={(v) =>
+                        updateHabit(habit.id, { notifyIfLate: v })
+                      }
+                      label={t('field.notifyLate')}
+                      testID="detail-notify"
+                    />
                   </Win95GroupBox>
                 </View>
               </View>

@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Path, Text as SvgText } from 'react-native-svg';
 import { useSettings } from '@/shared/context/SettingsContext';
+import { useTranslation } from '@/shared/hooks/useTranslation';
 import { RootStackParamList } from '@/navigation/types';
 import {
   Block,
@@ -51,6 +52,7 @@ function EnergyStar() {
 export function SplashScreen() {
   const navigation = useNavigation<Nav>();
   const { onboarded, loading } = useSettings();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -69,77 +71,75 @@ export function SplashScreen() {
       <HeaderRow>
         <View>
           <Mono $s={16} $b>
-            Habit BIOS v4.51
+            {t('splash.bios')}
           </Mono>
-          <Mono>Copyright (C) 1995-2026, Habit Industries Inc.</Mono>
+          <Mono>{t('splash.copyright')}</Mono>
         </View>
         <EnergyStar />
       </HeaderRow>
 
       <Block>
-        <Mono>Habit Manager 95 BIOS, Build 0518.2026</Mono>
-        <Mono>Awarding Personal OS, AwardBIOS v6.00PG</Mono>
+        <Mono>{t('splash.kernel')}</Mono>
+        <Mono>{t('splash.award')}</Mono>
       </Block>
 
       <Block>
-        <Mono>Main Processor: User Brain @ 1.0 wmps</Mono>
+        <Mono>{t('splash.processor')}</Mono>
         <Row>
-          <Mono>Memory Test: </Mono>
-          <Mono $c={GREEN}>262144K OK</Mono>
+          <Mono>{t('splash.memoryLabel')} </Mono>
+          <Mono $c={GREEN}>{t('splash.memoryValue')}</Mono>
         </Row>
-        <Mono>Detecting IDE drives...</Mono>
+        <Mono>{t('splash.detecting')}</Mono>
         <Indent>
-          <Mono>Primary Master: streak.dat   </Mono>
-          <Mono $c={GREEN}>(12 dias)</Mono>
+          <Mono>{t('splash.ide.primary')}</Mono>
+          <Mono $c={GREEN}>{t('splash.ide.days', { n: 12 })}</Mono>
         </Indent>
         <Indent>
-          <Mono>Primary Slave : config.ini   </Mono>
-          <Mono $c={GREEN}>OK</Mono>
+          <Mono>{t('splash.ide.slave')}</Mono>
+          <Mono $c={GREEN}>{t('splash.ide.ok')}</Mono>
         </Indent>
         <Indent>
-          <Mono>Secondary Master: history.db </Mono>
-          <Mono $c={GREEN}>OK</Mono>
+          <Mono>{t('splash.ide.secondary')}</Mono>
+          <Mono $c={GREEN}>{t('splash.ide.ok')}</Mono>
         </Indent>
       </Block>
 
       <Block>
         <Row>
-          <Mono>Loading habit kernel.....</Mono>
-          <Mono $c={GREEN}>[OK]</Mono>
+          <Mono>{t('splash.loadKernel')}</Mono>
+          <Mono $c={GREEN}>{t('splash.statusOk')}</Mono>
         </Row>
         <Row>
-          <Mono>Mounting /home/voce....</Mono>
-          <Mono $c={GREEN}>[OK]</Mono>
+          <Mono>{t('splash.mounting')}</Mono>
+          <Mono $c={GREEN}>{t('splash.statusOk')}</Mono>
         </Row>
         <Row>
-          <Mono>Scheduling notifications</Mono>
-          <Mono $c={GREEN}>[OK]</Mono>
+          <Mono>{t('splash.schedulingShort')}</Mono>
+          <Mono $c={GREEN}>{t('splash.statusOk')}</Mono>
         </Row>
         <Row>
-          <Mono>Initializing streaks....</Mono>
-          <Mono $c={AMBER}>[8 ativos]</Mono>
+          <Mono>{t('splash.initStreaks')}</Mono>
+          <Mono $c={AMBER}>{t('splash.streaksActive', { n: 8 })}</Mono>
         </Row>
       </Block>
 
       <PressBlock>
         <Row>
-          <Mono $c={WHITE}>Press </Mono>
+          <Mono $c={WHITE}>{t('splash.prompt.press')}</Mono>
           <KeyCap>
             <Mono $c="#000000">DEL</Mono>
           </KeyCap>
-          <Mono $c={WHITE}> to enter SETUP, </Mono>
+          <Mono $c={WHITE}>{t('splash.prompt.toSetup')}</Mono>
           <KeyCap>
             <Mono $c="#000000">F2</Mono>
           </KeyCap>
-          <Mono $c={WHITE}> to start day</Mono>
+          <Mono $c={WHITE}>{t('splash.prompt.toStart')}</Mono>
         </Row>
-        <Mono style={{ marginTop: 8 }}>
-          05/18/2026-AwardBIOS-Habit95-W83977EF-6A69KP9AC-00
-        </Mono>
+        <Mono style={{ marginTop: 8 }}>{t('splash.tag')}</Mono>
       </PressBlock>
 
       <Cursor>
-        <Mono>{'C:\\HABITS>_'}</Mono>
+        <Mono>{t('splash.dosPath')}</Mono>
       </Cursor>
     </Root>
   );

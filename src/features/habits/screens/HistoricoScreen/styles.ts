@@ -26,7 +26,7 @@ export const Week = styled.View`
   flex-direction: row;
 `;
 
-export const Day = styled.View<{ $today?: boolean; $dim?: boolean }>`
+export const Day = styled.Pressable<{ $today?: boolean; $dim?: boolean }>`
   flex: 1;
   aspect-ratio: 1;
   margin: 1px;

@@ -1,3 +1,4 @@
+import { TranslationKey } from '@/shared/i18n';
 import { Frequency, HabitIconKey } from '@/shared/types/habit';
 
 export const HABIT_ICON_KEYS: HabitIconKey[] = [
@@ -49,7 +50,28 @@ export const REMINDER_TIMES: string[] = (() => {
   return out;
 })();
 
-export const GOAL_UNITS = ['copos', 'min', 'vezes', 'páginas', 'km', 'h'];
+export const GOAL_UNIT_KEYS = [
+  'cups',
+  'minutes',
+  'times',
+  'pages',
+  'km',
+  'hours',
+] as const;
+
+export type GoalUnitKey = (typeof GOAL_UNIT_KEYS)[number];
+
+export const GOAL_UNIT_LABEL_KEYS: Record<GoalUnitKey, TranslationKey> = {
+  cups: 'unit.cups',
+  minutes: 'unit.minutes',
+  times: 'unit.times',
+  pages: 'unit.pages',
+  km: 'unit.km',
+  hours: 'unit.hours',
+};
+
+/** @deprecated Use GOAL_UNIT_KEYS + GOAL_UNIT_LABEL_KEYS. Kept for tests. */
+export const GOAL_UNITS = GOAL_UNIT_KEYS as readonly string[];
 
 export const APP_VERSION = '4.51.2026';
 export const APP_BUILD = 'Build 0518 — "Não Está Respondendo"';

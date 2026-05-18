@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import {
   Bezel,
   Win95Button,
@@ -60,6 +60,51 @@ export function ProcessosScreen() {
   ).length;
   const crashed = sorted.filter((h) => h.stats.status === 'crashed').length;
   const paused = sorted.filter((h) => h.stats.status === 'paused').length;
+
+  function changePriority() {
+    if (!selected) return;
+    const name = selected.name;
+    Alert.alert(
+      t('proc.priorityTitle', { name }),
+      t('proc.priorityMessage'),
+      [
+        {
+          text: t('proc.priorityRealtime'),
+          onPress: () =>
+            Alert.alert(
+              t('proc.priorityTitle', { name }),
+              t('proc.priorityChanged', {
+                name,
+                level: t('proc.priorityRealtime'),
+              })
+            ),
+        },
+        {
+          text: t('proc.priorityHigh'),
+          onPress: () =>
+            Alert.alert(
+              t('proc.priorityTitle', { name }),
+              t('proc.priorityChanged', {
+                name,
+                level: t('proc.priorityHigh'),
+              })
+            ),
+        },
+        {
+          text: t('proc.priorityNormal'),
+          onPress: () =>
+            Alert.alert(
+              t('proc.priorityTitle', { name }),
+              t('proc.priorityChanged', {
+                name,
+                level: t('proc.priorityNormal'),
+              })
+            ),
+        },
+        { text: t('btn.cancel'), style: 'cancel' },
+      ]
+    );
+  }
 
   const cpuPct = sorted.length === 0
     ? 0
@@ -242,6 +287,7 @@ export function ProcessosScreen() {
         <Win95Button
           label={t('proc.priority')}
           disabled={!selected}
+          onPress={changePriority}
           style={{ marginRight: 4 }}
           testID="proc-priority"
         />

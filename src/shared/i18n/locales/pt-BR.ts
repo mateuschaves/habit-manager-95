@@ -41,6 +41,20 @@ export const ptBR = {
   'cfg.notif.dnd': 'Modo "Não perturbe" das 23:00 às 06:30.',
   'cfg.notif.change': 'Mudar...',
   'cfg.notif.windowLabel': 'janela 7h–22h',
+  'cfg.notif.global': 'Avisar processos atrasados (global)',
+  'cfg.notif.applied': 'Notificações atualizadas.',
+  'cfg.notif.dndTitle': 'Não Perturbe',
+  'cfg.notif.dndBody':
+    'Os horários do "Não perturbe" são gerenciados nas configurações do iOS.',
+  'cfg.notif.sound.event': 'Evento:',
+  'cfg.notif.sound.complete': 'Hábito concluído',
+  'cfg.notif.sound.crash': 'Streak quebrado',
+  'cfg.notif.sound.remind': 'Lembrete',
+  'cfg.notif.sound.startup': 'Início do dia',
+  'cfg.notif.sound.scheme': 'Esquema:',
+  'cfg.notif.sound.classic': 'Win95 Clássico',
+  'cfg.notif.sound.amiga': 'Amiga Workbench',
+  'cfg.notif.sound.silent': 'Sem sons',
 
   'cfg.appearance.title': 'Propriedades de Vídeo',
   'cfg.appearance.tab.bg': 'Plano de fundo',
@@ -75,6 +89,15 @@ export const ptBR = {
   'cfg.backup.eta': 'Tempo restante: {n} segundos',
   'cfg.backup.start': 'Iniciar backup',
   'cfg.backup.restore': 'Restaurar...',
+  'cfg.backup.shareTitle': 'Backup do Habit Manager 95',
+  'cfg.backup.status.idle': 'Pronto para iniciar.',
+  'cfg.backup.status.exporting': 'Preparando {file}...',
+  'cfg.backup.status.done': 'Backup criado.',
+  'cfg.backup.status.error': 'Falha ao gerar backup.',
+  'cfg.backup.emptySelection': 'Marque ao menos um arquivo para exportar.',
+  'cfg.backup.restoreTitle': 'Restaurar backup',
+  'cfg.backup.restoreBody':
+    'Restauração não-destrutiva ainda está em desenvolvimento. Por enquanto, use "Esvaziar Reciclagem" e refaça o setup com o backup à mão.',
 
   'cfg.dateTime.title': 'Propriedades de Data/Hora',
   'cfg.dateTime.tab.date': 'Data e Hora',
@@ -86,6 +109,10 @@ export const ptBR = {
     '(Brasil não usa mais — mas guardamos a opção, por nostalgia.)',
   'cfg.dateTime.warning':
     'Mudar a hora do sistema não retroage seus streaks. Tentar burlar é fofo, mas inútil.',
+  'cfg.dateTime.applied': 'Configurações de data e hora aplicadas.',
+  'cfg.dateTime.systemClockTitle': 'Relógio do sistema',
+  'cfg.dateTime.systemClockBody':
+    'O Habit Manager 95 não altera o relógio do iOS. Use os Ajustes do sistema para isso.',
 
   'cfg.display.title': 'Propriedades de Tela',
   'cfg.display.tab.screen': 'Tela',
@@ -108,6 +135,7 @@ export const ptBR = {
   'cfg.display.resolution': 'Resolução',
   'cfg.display.area': 'Tamanho da área de hábitos:',
   'cfg.display.previewBsod': 'Streak quebrado em meditar.exe. Aguarde...',
+  'cfg.display.applied': 'Configurações de tela aplicadas.',
 
   'cfg.help.title': 'Tópicos da Ajuda: Habit Manager 95',
   'cfg.help.tab.contents': 'Conteúdo',
@@ -128,6 +156,11 @@ export const ptBR = {
   'cfg.help.f1': 'F1 a qualquer momento.',
   'cfg.help.print': 'Imprimir...',
   'cfg.help.annotate': 'Anotar',
+  'cfg.help.printShareTitle': 'Tópico de ajuda',
+  'cfg.help.printNoTopic': 'Selecione um tópico antes de imprimir.',
+  'cfg.help.annotateTitle': 'Anotação',
+  'cfg.help.annotateBody':
+    'Anotações por tópico ficam apenas neste dispositivo (e na sua memória).',
   'cfg.help.display': 'Exibir',
   'cfg.help.close': 'Fechar',
   'cfg.help.searchPlaceholder': 'Digite a(s) palavra(s) que você procura:',
@@ -142,12 +175,29 @@ export const ptBR = {
   // splash
   'splash.bios': 'Habit BIOS v4.51',
   'splash.copyright': 'Copyright (C) 1995-2026, Habit Industries Inc.',
-  'splash.memory': 'Teste de memória: 262144K OK',
   'splash.detecting': 'Detectando unidades IDE...',
-  'splash.loadingKernel': 'Carregando kernel de hábitos.....[OK]',
-  'splash.mounting': 'Montando /home/voce....[OK]',
-  'splash.scheduling': 'Agendando notificações [OK]',
   'splash.press': 'Pressione qualquer lugar para iniciar o dia',
+  'splash.kernel': 'Habit Manager 95 BIOS, Build 0518.2026',
+  'splash.award': 'Awarding Personal OS, AwardBIOS v6.00PG',
+  'splash.processor': 'Main Processor: User Brain @ 1.0 wmps',
+  'splash.memoryLabel': 'Teste de memória:',
+  'splash.memoryValue': '262144K OK',
+  'splash.ide.primary': 'Primary Master: streak.dat   ',
+  'splash.ide.slave': 'Primary Slave : config.ini   ',
+  'splash.ide.secondary': 'Secondary Master: history.db ',
+  'splash.ide.days': '({n} dias)',
+  'splash.ide.ok': 'OK',
+  'splash.loadKernel': 'Carregando kernel de hábitos.....',
+  'splash.mounting': 'Montando /home/voce....',
+  'splash.schedulingShort': 'Agendando notificações',
+  'splash.initStreaks': 'Inicializando streaks....',
+  'splash.streaksActive': '[{n} ativos]',
+  'splash.statusOk': '[OK]',
+  'splash.prompt.press': 'Pressione ',
+  'splash.prompt.toSetup': ' para SETUP, ',
+  'splash.prompt.toStart': ' para iniciar o dia',
+  'splash.dosPath': 'C:\\HABITS>_',
+  'splash.tag': '05/18/2026-AwardBIOS-Habit95-W83977EF-6A69KP9AC-00',
 
   // onboarding
   'setup.title': 'Setup do Habit Manager 95',
@@ -215,6 +265,13 @@ export const ptBR = {
   'proc.priority': 'Prioridade...',
   'proc.properties': 'Propriedades',
   'proc.terminate': 'Encerrar processo',
+  'proc.priorityTitle': 'Prioridade — {name}.exe',
+  'proc.priorityMessage': 'Escolha a prioridade do processo:',
+  'proc.priorityRealtime': 'Tempo real',
+  'proc.priorityHigh': 'Alta',
+  'proc.priorityNormal': 'Normal',
+  'proc.priorityLow': 'Baixa',
+  'proc.priorityChanged': 'Prioridade de {name}.exe definida como {level}.',
   'proc.systemIdle': 'system.idle',
   'proc.uptimeDays': '{n}d',
   'list.empty': 'Nenhum processo em execução. Adicione um hábito para começar.',
@@ -236,6 +293,14 @@ export const ptBR = {
   'apps.empty': 'Nada agendado para hoje.',
   'apps.postpone': 'Adiar 1h',
   'apps.skip': 'Pular hoje',
+  'apps.snoozeTitle': 'Adiar lembrete',
+  'apps.snoozeDone': '{name}.exe adiado para {time}.',
+  'apps.snoozeNoTime':
+    '{name}.exe não tem horário definido — abra Propriedades para configurar.',
+  'apps.skipTitle': 'Pular {name}.exe',
+  'apps.skipConfirm':
+    'Marcar {name}.exe como pulado hoje? Isto NÃO conta como conclusão e seu streak vai zerar se a frequência exigir.',
+  'apps.skipDone': '{name}.exe pulado hoje.',
   'apps.completeNow': 'Concluir agora',
   'apps.undo': 'Desfazer',
   'apps.line.done': 'Concluído às {time}',
@@ -268,6 +333,11 @@ export const ptBR = {
   'history.legendPartial': 'parcial',
   'history.legendFail': 'travou',
   'history.items': '{n} item(s)',
+  'history.dayTitle': 'Hábitos de {date}',
+  'history.dayNoneDue': 'Nenhum hábito agendado para este dia.',
+  'history.dayDone': 'Concluído',
+  'history.dayMissed': 'Não concluído',
+  'history.dayFuture': 'Data no futuro.',
 
   // executar
   'run.title': 'Executar',
@@ -331,6 +401,16 @@ export const ptBR = {
   'settings.resetDone': 'Sistema formatado. Comece de novo.',
   'settings.rerunSetup': 'Repetir setup...',
   'settings.maintenance': 'Manutenção',
+  'settings.rerunConfirmTitle': 'Repetir setup',
+  'settings.rerunConfirmBody':
+    'Isto apagará seus hábitos atuais e abrirá o setup do zero. Continuar?',
+  'settings.factoryReset': 'Restaurar configurações de fábrica',
+  'settings.factoryConfirmTitle': 'Restaurar configurações',
+  'settings.factoryConfirmBody':
+    'Volta tema, idioma, brilho e opções para o padrão. Mantém seus hábitos. Continuar?',
+  'settings.factoryDone': 'Configurações restauradas.',
+  'settings.rerunSetupDesc': 'Refaz o setup do zero (limpa hábitos).',
+  'settings.recycleDesc': 'Apaga TODOS os hábitos e o histórico.',
 
   // about
   'about.title': 'Sobre Habit Manager 95',
@@ -347,6 +427,24 @@ export const ptBR = {
 
   // taskbar
   'taskbar.start': 'Iniciar',
+
+  // goal units (used in run dialog / detail)
+  'unit.cups': 'copos',
+  'unit.minutes': 'min',
+  'unit.times': 'vezes',
+  'unit.pages': 'páginas',
+  'unit.km': 'km',
+  'unit.hours': 'h',
+
+  // shared
+  'common.notImplemented': 'Recurso não disponível nesta build.',
+  'common.error': 'Erro',
+  'common.done': 'Pronto',
+
+  // onboarding
+  'setup.installError':
+    'Falha ao instalar hábitos. Tente novamente — o erro foi registrado.',
+  'setup.removeDraft': 'Remover',
 };
 
 export type TranslationKey = keyof typeof ptBR;

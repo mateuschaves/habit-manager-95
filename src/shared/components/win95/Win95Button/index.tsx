@@ -14,6 +14,8 @@ interface Win95ButtonProps {
   icon?: React.ReactNode;
   /** Force the pressed bevel (used by toggle-like buttons). */
   active?: boolean;
+  /** Override the label for screen readers (use when label is just a symbol). */
+  accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
@@ -26,6 +28,7 @@ export function Win95Button({
   danger,
   icon,
   active,
+  accessibilityLabel,
   style,
   testID,
 }: Win95ButtonProps) {
@@ -42,6 +45,7 @@ export function Win95Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ disabled: !!disabled }}
       disabled={disabled}
       onPress={onPress}

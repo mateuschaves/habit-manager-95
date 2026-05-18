@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { LayoutChangeEvent, Pressable, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { Alert, LayoutChangeEvent, PanResponder, Pressable, View } from 'react-native';
 import { ColorDepth } from '@/shared/context/SettingsContext/types';
 import {
   Bezel,
@@ -34,20 +34,38 @@ export function DisplayDialog() {
   const navigation = useNavigation();
   const { brightness, setBrightness, colorDepth, setColorDepth } = useSettings();
   const [resolution, setResolution] = useState('iphone');
-  const [trackWidth, setTrackWidth] = useState(0);
+  const trackWidthRef = useRef(0);
+  const setBrightnessRef = useRef(setBrightness);
+  setBrightnessRef.current = setBrightness;
 
   function onTrackLayout(e: LayoutChangeEvent) {
-    setTrackWidth(e.nativeEvent.layout.width);
+    trackWidthRef.current = e.nativeEvent.layout.width;
   }
 
-  function tapSlider(x: number) {
-    if (trackWidth <= 0) return;
-    const pct = Math.round((x / trackWidth) * 100);
-    setBrightness(Math.max(0, Math.min(100, pct)));
+  function updateAt(x: number) {
+    const w = trackWidthRef.current;
+    if (w <= 0) return;
+    const pct = Math.max(0, Math.min(100, Math.round((x / w) * 100)));
+    setBrightnessRef.current(pct);
   }
+
+  const responder = useMemo(
+    () =>
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: () => true,
+        onPanResponderGrant: (e) => updateAt(e.nativeEvent.locationX),
+        onPanResponderMove: (e) => updateAt(e.nativeEvent.locationX),
+      }),
+    []
+  );
 
   function nudge(delta: number) {
     setBrightness(Math.max(0, Math.min(100, brightness + delta)));
+  }
+
+  function applyAndStay() {
+    Alert.alert(t('cfg.display.title'), t('cfg.display.applied'));
   }
 
   return (
@@ -89,8 +107,8 @@ export function DisplayDialog() {
           <Slider>
             <SliderHit
               onLayout={onTrackLayout}
-              onPress={(e) => tapSlider(e.nativeEvent.locationX)}
               testID="brightness-track"
+              {...responder.panHandlers}
             >
               <SliderTrack />
               <SliderThumb style={{ left: `${brightness}%` }} />
@@ -187,13 +205,19 @@ export function DisplayDialog() {
           primary
           onPress={() => navigation.goBack()}
           style={{ marginRight: 4 }}
+          testID="display-ok"
         />
         <Win95Button
           label={t('btn.cancel')}
           onPress={() => navigation.goBack()}
           style={{ marginRight: 4 }}
+          testID="display-cancel"
         />
-        <Win95Button label={t('btn.apply')} />
+        <Win95Button
+          label={t('btn.apply')}
+          onPress={applyAndStay}
+          testID="display-apply"
+        />
       </Footer>
     </Win95DialogShell>
   );

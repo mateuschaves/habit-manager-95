@@ -8,7 +8,7 @@ export const MenuBar = styled.View`
   border-bottom-color: ${({ theme }) => theme.colors.borderDark};
 `;
 
-export const MenuItem = styled.View`
+export const MenuItem = styled.Pressable`
   padding: 2px 8px;
 `;
 

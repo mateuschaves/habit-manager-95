@@ -16,7 +16,8 @@ import { HabitIcon, IconRun32 } from '@/shared/components/icons';
 import { useHabits } from '@/shared/context/HabitsContext';
 import { useTranslation } from '@/shared/hooks/useTranslation';
 import {
-  GOAL_UNITS,
+  GOAL_UNIT_KEYS,
+  GOAL_UNIT_LABEL_KEYS,
   HABIT_ICON_KEYS,
   REMINDER_TIMES,
 } from '@/shared/constants';
@@ -63,7 +64,7 @@ export function RunDialogScreen() {
     existing?.goalAmount != null ? String(existing.goalAmount) : ''
   );
   const [goalUnit, setGoalUnit] = useState<string>(
-    existing?.goalUnit ?? GOAL_UNITS[0]
+    existing?.goalUnit ?? GOAL_UNIT_KEYS[0]
   );
   const [notifyIfLate, setNotifyIfLate] = useState<boolean>(
     existing?.notifyIfLate ?? true
@@ -228,7 +229,10 @@ export function RunDialogScreen() {
                 <Win95Select
                   value={goalUnit}
                   onChange={setGoalUnit}
-                  options={GOAL_UNITS}
+                  options={GOAL_UNIT_KEYS.map((k) => ({
+                    value: k,
+                    label: t(GOAL_UNIT_LABEL_KEYS[k]),
+                  }))}
                   testID="run-goal-unit"
                 />
               </Field>

@@ -23,7 +23,6 @@ import { useHabits } from '@/shared/context/HabitsContext';
 import { useSettings } from '@/shared/context/SettingsContext';
 import { useTranslation } from '@/shared/hooks/useTranslation';
 import {
-  GOAL_UNITS,
   HABIT_ICON_KEYS,
   REMINDER_TIMES,
 } from '@/shared/constants';
@@ -41,6 +40,7 @@ import {
   DayToggle,
   DaysRow,
   DraftItem,
+  DraftRemove,
   DraftSidebar,
   Footer,
   FooterSpacer,
@@ -85,13 +85,17 @@ export function OnboardingWizard() {
   }
 
   async function finish() {
-    for (const input of ob.toInputs()) {
-      await addHabit(input);
+    try {
+      for (const input of ob.toInputs()) {
+        await addHabit(input);
+      }
+      goMain();
+    } catch {
+      Alert.alert(t('setup.title'), t('setup.installError'));
     }
-    goMain();
   }
 
-  function next() {
+  async function next() {
     if (ob.step === 2 && ob.drafts.length === 0) {
       Alert.alert(t('setup.title'), t('setup.customize.empty'));
       return;
@@ -101,7 +105,7 @@ export function OnboardingWizard() {
       return;
     }
     if (ob.step >= WIZARD_STEPS) {
-      finish();
+      await finish();
       return;
     }
     ob.setStep(ob.step + 1);
@@ -228,29 +232,41 @@ export function OnboardingWizard() {
                   <Bezel variant="inset">
                     <DraftSidebar>
                       <ScrollView>
-                        {ob.drafts.map((d) => (
-                          <DraftItem
-                            key={d.key}
-                            $active={d.key === ob.activeDraft?.key}
-                            onPress={() => ob.setActiveKey(d.key)}
-                            testID={`draft-${d.key}`}
-                          >
-                            <HabitIcon iconKey={d.iconKey} size={14} />
-                            <View style={{ flex: 1, marginLeft: 3 }}>
-                              <Win95Text
-                                variant="caption"
-                                numberOfLines={1}
-                                color={
-                                  d.key === ob.activeDraft?.key
-                                    ? '#ffffff'
-                                    : undefined
-                                }
+                        {ob.drafts.map((d) => {
+                          const isActive = d.key === ob.activeDraft?.key;
+                          return (
+                            <DraftItem
+                              key={d.key}
+                              $active={isActive}
+                              onPress={() => ob.setActiveKey(d.key)}
+                              testID={`draft-${d.key}`}
+                            >
+                              <HabitIcon iconKey={d.iconKey} size={14} />
+                              <View style={{ flex: 1, marginLeft: 3 }}>
+                                <Win95Text
+                                  variant="caption"
+                                  numberOfLines={1}
+                                  color={isActive ? '#ffffff' : undefined}
+                                >
+                                  {(d.name || '...') + '.exe'}
+                                </Win95Text>
+                              </View>
+                              <DraftRemove
+                                accessibilityRole="button"
+                                accessibilityLabel={t('setup.removeDraft')}
+                                onPress={() => ob.removeDraft(d.key)}
+                                testID={`draft-remove-${d.key}`}
                               >
-                                {(d.name || '...') + '.exe'}
-                              </Win95Text>
-                            </View>
-                          </DraftItem>
-                        ))}
+                                <Win95Text
+                                  variant="caption"
+                                  color={isActive ? '#ffffff' : '#404040'}
+                                >
+                                  ✕
+                                </Win95Text>
+                              </DraftRemove>
+                            </DraftItem>
+                          );
+                        })}
                       </ScrollView>
                       <NewDraft
                         onPress={() => ob.addBlank()}

@@ -35,6 +35,8 @@ import {
   ThemeTile,
 } from './styles';
 
+type ItemKey = 'titleBarActive' | 'titleBarInactive' | 'menuBar';
+
 export function AppearanceDialog() {
   const { t } = useTranslation();
   const navigation = useNavigation();
@@ -42,10 +44,24 @@ export function AppearanceDialog() {
 
   // Deferred-edit model: changes only land in the real theme on Apply/OK.
   const [draft, setDraft] = useState<PaletteName>(palette);
+  const [itemKey, setItemKey] = useState<ItemKey>('titleBarActive');
   const dirty = draft !== palette;
 
   const paletteNames = Object.keys(PALETTE_LABELS) as PaletteName[];
   const preview = palettes[draft];
+
+  const itemColor1 =
+    itemKey === 'titleBarActive'
+      ? preview.titleBar
+      : itemKey === 'titleBarInactive'
+      ? preview.titleBarInactive
+      : preview.surface;
+  const itemColor2 =
+    itemKey === 'titleBarActive'
+      ? preview.titleBar2
+      : itemKey === 'titleBarInactive'
+      ? preview.titleBarInactive
+      : preview.surfaceDeep;
 
   function apply() {
     if (dirty) setPalette(draft);
@@ -135,8 +151,8 @@ export function AppearanceDialog() {
             </ItemLabel>
             <ItemValue>
               <Win95Select
-                value="titleBarActive"
-                onChange={() => undefined}
+                value={itemKey}
+                onChange={(v) => setItemKey(v as ItemKey)}
                 options={[
                   {
                     value: 'titleBarActive',
@@ -148,6 +164,7 @@ export function AppearanceDialog() {
                   },
                   { value: 'menuBar', label: t('cfg.appearance.menuBar') },
                 ]}
+                testID="appearance-item"
               />
             </ItemValue>
 
@@ -171,7 +188,7 @@ export function AppearanceDialog() {
                   style={{
                     width: 48,
                     height: 22,
-                    backgroundColor: preview.titleBar,
+                    backgroundColor: itemColor1,
                   }}
                 />
               </Bezel>
@@ -188,7 +205,7 @@ export function AppearanceDialog() {
                   style={{
                     width: 48,
                     height: 22,
-                    backgroundColor: preview.titleBar2,
+                    backgroundColor: itemColor2,
                   }}
                 />
               </Bezel>

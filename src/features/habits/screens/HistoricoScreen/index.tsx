@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Alert } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import {
   Bezel,
@@ -85,16 +86,51 @@ export function HistoricoScreen() {
     });
   }
 
+  function openDay(iso: string, inMonth: boolean, future: boolean) {
+    if (!inMonth) return;
+    const title = t('history.dayTitle', { date: iso });
+    if (future) {
+      Alert.alert(title, t('history.dayFuture'));
+      return;
+    }
+    const considered = habits.filter(
+      (h) => h.createdAt.slice(0, 10) <= iso && isDueOn(h, iso)
+    );
+    if (considered.length === 0) {
+      Alert.alert(title, t('history.dayNoneDue'));
+      return;
+    }
+    const body = considered
+      .map((h) => {
+        const done = sets[h.id]?.has(iso);
+        const marker = done ? '✓' : '✗';
+        const status = done ? t('history.dayDone') : t('history.dayMissed');
+        return `${marker} ${h.name}.exe — ${status}`;
+      })
+      .join('\n');
+    Alert.alert(title, body);
+  }
+
   const itemCount = habits.length;
 
   return (
     <>
       <NavRow>
-        <Win95Button label="<" onPress={() => shift(-1)} testID="hist-prev" />
+        <Win95Button
+          label="<"
+          accessibilityLabel="Previous month"
+          onPress={() => shift(-1)}
+          testID="hist-prev"
+        />
         <Win95Text variant="label" style={{ flex: 1, textAlign: 'center' }}>
           {months[cursor.month]} {cursor.year}
         </Win95Text>
-        <Win95Button label=">" onPress={() => shift(1)} testID="hist-next" />
+        <Win95Button
+          label=">"
+          accessibilityLabel="Next month"
+          onPress={() => shift(1)}
+          testID="hist-next"
+        />
       </NavRow>
       <Bezel variant="inset" fill containerStyle={{ flex: 1 }}>
         <Grid>
@@ -118,7 +154,9 @@ export function HistoricoScreen() {
                     key={i}
                     $today={isToday}
                     $dim={!cell.inMonth || cell.future}
-                    testID={isToday ? 'hist-today' : undefined}
+                    onPress={() => openDay(cell.iso, cell.inMonth, cell.future)}
+                    accessibilityLabel={cell.iso}
+                    testID={isToday ? 'hist-today' : `hist-day-${cell.iso}`}
                   >
                     <IconFolder size={12} open={isToday} />
                     <Win95Text variant="caption" mono>
