@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Habit Manager 95",
+    "slug": "habit-manager-95",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "habitmanager95",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#008080"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.habitindustries.habitmanager95"
+    },
+    "android": {
+      "package": "com.habitindustries.habitmanager95",
+      "adaptiveIcon": {
+        "backgroundColor": "#008080",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
