@@ -1,5 +1,11 @@
 import styled from 'styled-components/native';
 
+export const IntroRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 4px;
+`;
+
 export const ListWrap = styled.View`
   flex: 1;
   background-color: ${({ theme }) => theme.colors.surfaceDeep};
@@ -9,6 +15,7 @@ export const StatusLine = styled.View`
   flex-direction: row;
   align-items: center;
   margin-top: 6px;
+  flex-wrap: wrap;
 `;
 
 export const Sep = styled.View`
