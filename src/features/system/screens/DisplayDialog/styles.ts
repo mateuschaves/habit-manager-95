@@ -72,8 +72,14 @@ export const Slider = styled.View`
   justify-content: center;
 `;
 
-export const SliderTrack = styled.View`
+export const SliderHit = styled.Pressable`
   flex: 1;
+  height: 22px;
+  justify-content: center;
+  position: relative;
+`;
+
+export const SliderTrack = styled.View`
   height: 4px;
   background-color: ${({ theme }) => theme.colors.surfaceDeep};
   border-width: 1px;
@@ -81,10 +87,6 @@ export const SliderTrack = styled.View`
   border-left-color: ${({ theme }) => theme.colors.borderDark};
   border-right-color: ${({ theme }) => theme.colors.borderLight};
   border-bottom-color: ${({ theme }) => theme.colors.borderLight};
-`;
-
-export const SliderTrackInner = styled.View`
-  flex: 1;
 `;
 
 export const SliderThumb = styled.View`

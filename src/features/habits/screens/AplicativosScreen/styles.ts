@@ -67,6 +67,8 @@ export const RunningDot = styled.View`
 
 export const Footer = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-top: 8px;
+  row-gap: 4px;
 `;

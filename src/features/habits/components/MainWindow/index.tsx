@@ -34,6 +34,7 @@ export function MainWindow({ children }: { children: React.ReactNode }) {
       title={t('app.title')}
       icon={<IconProcesses size={14} />}
       controls={['min', 'max', 'close']}
+      fill
       style={{ flex: 1 }}
       bodyStyle={{ flex: 1, padding: 4 }}
     >

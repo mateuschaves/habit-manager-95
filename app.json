@@ -14,10 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.habitindustries.habitmanager95"
+      "bundleIdentifier": "com.wazowsky.habitmanager95",
+      "ascAppId": "6770595838",
+      "appleTeamId": "4KWUX6ULKJ"
     },
     "android": {
-      "package": "com.habitindustries.habitmanager95",
+      "package": "com.wazowsky.habitmanager95",
       "adaptiveIcon": {
         "backgroundColor": "#008080",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -28,6 +30,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#000080"
+        }
+      ]
+    ]
   }
 }

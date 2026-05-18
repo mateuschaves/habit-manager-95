@@ -7,6 +7,22 @@ export type HabitIconKey =
   | 'exercise'
   | 'food'
   | 'study'
+  | 'code'
+  | 'music'
+  | 'art'
+  | 'money'
+  | 'pets'
+  | 'plant'
+  | 'bike'
+  | 'swim'
+  | 'coffee'
+  | 'pill'
+  | 'heart'
+  | 'pray'
+  | 'walk'
+  | 'journal'
+  | 'sun'
+  | 'phone'
   | 'exe';
 
 export type Frequency = 'daily' | 'weekly' | 'custom';

@@ -130,6 +130,14 @@ export const ptBR = {
   'cfg.help.annotate': 'Anotar',
   'cfg.help.display': 'Exibir',
   'cfg.help.close': 'Fechar',
+  'cfg.help.searchPlaceholder': 'Digite a(s) palavra(s) que você procura:',
+  'cfg.help.searchEmpty': 'Nenhum tópico encontrado.',
+  'cfg.help.indexHint': 'Digite as primeiras letras ou clique em um tópico:',
+  'cfg.help.noArticle': 'Selecione um tópico à esquerda para ver o conteúdo.',
+  'cfg.help.article.taskmgr':
+    'O Task Manager mostra todos os hábitos como processos. A aba Aplicativos lista a rotina de hoje. Processos é a visão técnica (PID, memória, uptime). Use Encerrar processo para terminar o hábito do dia atual.',
+  'cfg.help.article.streaks':
+    'Um streak é o número de dias consecutivos que você concluiu o hábito. Pular um dia faz o streak voltar a zero — e dispara um BSOD com som de erro do sistema. Não é pessoal, é só o kernel.',
 
   // splash
   'splash.bios': 'Habit BIOS v4.51',
@@ -229,6 +237,7 @@ export const ptBR = {
   'apps.postpone': 'Adiar 1h',
   'apps.skip': 'Pular hoje',
   'apps.completeNow': 'Concluir agora',
+  'apps.undo': 'Desfazer',
   'apps.line.done': 'Concluído às {time}',
   'apps.line.crashed': 'Não respondeu. Streak de {n} dias perdido.',
   'apps.line.pending': 'Próximo lembrete às {time}',
@@ -320,6 +329,8 @@ export const ptBR = {
   'settings.resetConfirm':
     'Isso apaga TODOS os hábitos e histórico permanentemente. Continuar?',
   'settings.resetDone': 'Sistema formatado. Comece de novo.',
+  'settings.rerunSetup': 'Repetir setup...',
+  'settings.maintenance': 'Manutenção',
 
   // about
   'about.title': 'Sobre Habit Manager 95',

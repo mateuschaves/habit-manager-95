@@ -6,8 +6,11 @@ export const Bar = styled.View`
 `;
 
 export const Tab = styled.Pressable<{ $active: boolean }>`
-  padding: ${({ $active }) => ($active ? '7px 12px 6px' : '5px 12px 4px')};
+  flex: 1;
+  min-width: 0;
+  padding: ${({ $active }) => ($active ? '7px 4px 6px' : '5px 4px 4px')};
   margin-right: -1px;
+  align-items: center;
   background-color: ${({ theme }) => theme.colors.surface};
   border-top-width: 1px;
   border-left-width: 1px;

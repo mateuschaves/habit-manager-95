@@ -116,6 +116,7 @@ export function OnboardingWizard() {
         icon={<IconFloppy size={14} />}
         controls={['close']}
         onClose={goMain}
+        fill
         style={{ flex: 1 }}
         bodyStyle={{ flex: 1, padding: 0 }}
         testID="onboarding-window"

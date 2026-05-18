@@ -54,6 +54,12 @@ export function SettingsProvider({ children, initialState }: ProviderProps) {
       setPalette: (palette) => persist({ ...state, palette }),
       setLanguage: (language) => persist({ ...state, language }),
       setNotifyLate: (notifyLate) => persist({ ...state, notifyLate }),
+      setBrightness: (brightness) =>
+        persist({
+          ...state,
+          brightness: Math.max(0, Math.min(100, Math.round(brightness))),
+        }),
+      setColorDepth: (colorDepth) => persist({ ...state, colorDepth }),
       completeOnboarding: () => persist({ ...state, onboarded: true }),
       resetSettings: () => persist({ ...DEFAULT_SETTINGS, onboarded: true }),
     }),
