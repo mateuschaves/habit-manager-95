@@ -54,7 +54,7 @@ export function AplicativosScreen() {
       <Win95Text style={{ marginBottom: 4 }}>
         {t('apps.today', { date: formatDisplayDate(today) })}
       </Win95Text>
-      <Bezel variant="inset" containerStyle={{ flex: 1 }}>
+      <Bezel variant="inset" fill containerStyle={{ flex: 1 }}>
         <ListWrap>
           <ScrollView>
             {habitsWithStats.map((habit) => {

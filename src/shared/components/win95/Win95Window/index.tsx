@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 import { Bezel } from '../Bezel';
 import { IconClose } from '@/shared/components/icons';
 import { Win95Text } from '../Win95Text';
@@ -38,47 +38,45 @@ export function Win95Window({
   testID,
 }: Win95WindowProps) {
   return (
-    <Bezel variant="raised" containerStyle={style} testID={testID}>
-      <View>
-        <TitleBar $inactive={inactive}>
-          <TitleText>
-            {icon ? <TitleIconSlot>{icon}</TitleIconSlot> : null}
-            <Win95Text bold onDark numberOfLines={1} variant="title">
-              {title}
-            </Win95Text>
-          </TitleText>
-          <Controls>
-            {controls.includes('min') && (
-              <Bezel variant="raised">
-                <ControlButton>
-                  <Win95Text bold>_</Win95Text>
-                </ControlButton>
-              </Bezel>
-            )}
-            {controls.includes('max') && (
-              <Bezel variant="raised">
-                <ControlButton>
-                  <Win95Text bold>□</Win95Text>
-                </ControlButton>
-              </Bezel>
-            )}
-            {controls.includes('close') && (
-              <Bezel variant="raised">
-                <ControlButton
-                  accessibilityRole="button"
-                  onTouchEnd={onClose}
-                  testID={testID ? `${testID}-close` : 'window-close'}
-                >
-                  <IconClose size={9} />
-                </ControlButton>
-              </Bezel>
-            )}
-          </Controls>
-        </TitleBar>
-        <Body $fullBleed={fullBleed} style={bodyStyle}>
-          {children}
-        </Body>
-      </View>
+    <Bezel variant="raised" fill containerStyle={style} testID={testID}>
+      <TitleBar $inactive={inactive}>
+        <TitleText>
+          {icon ? <TitleIconSlot>{icon}</TitleIconSlot> : null}
+          <Win95Text bold onDark numberOfLines={1} variant="title">
+            {title}
+          </Win95Text>
+        </TitleText>
+        <Controls>
+          {controls.includes('min') && (
+            <Bezel variant="raised">
+              <ControlButton>
+                <Win95Text bold>_</Win95Text>
+              </ControlButton>
+            </Bezel>
+          )}
+          {controls.includes('max') && (
+            <Bezel variant="raised">
+              <ControlButton>
+                <Win95Text bold>□</Win95Text>
+              </ControlButton>
+            </Bezel>
+          )}
+          {controls.includes('close') && (
+            <Bezel variant="raised">
+              <ControlButton
+                accessibilityRole="button"
+                onTouchEnd={onClose}
+                testID={testID ? `${testID}-close` : 'window-close'}
+              >
+                <IconClose size={9} />
+              </ControlButton>
+            </Bezel>
+          )}
+        </Controls>
+      </TitleBar>
+      <Body $fullBleed={fullBleed} style={bodyStyle}>
+        {children}
+      </Body>
     </Bezel>
   );
 }

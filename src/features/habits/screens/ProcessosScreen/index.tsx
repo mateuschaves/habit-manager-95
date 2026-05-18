@@ -64,7 +64,7 @@ export function ProcessosScreen() {
           { label: t('col.energy'), width: 64, align: 'right' },
         ]}
       />
-      <Bezel variant="inset" containerStyle={{ flex: 1 }}>
+      <Bezel variant="inset" fill containerStyle={{ flex: 1 }}>
         <ListWrap>
           <ScrollView>
             {habitsWithStats.map((habit) => (

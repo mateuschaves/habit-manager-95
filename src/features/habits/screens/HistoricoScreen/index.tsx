@@ -96,7 +96,7 @@ export function HistoricoScreen() {
         </Win95Text>
         <Win95Button label=">" onPress={() => shift(1)} testID="hist-next" />
       </NavRow>
-      <Bezel variant="inset" containerStyle={{ flex: 1 }}>
+      <Bezel variant="inset" fill containerStyle={{ flex: 1 }}>
         <Grid>
           <DowRow>
             {DOW.map((d, i) => (
