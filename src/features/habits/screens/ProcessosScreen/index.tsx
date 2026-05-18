@@ -96,6 +96,11 @@ export function ProcessosScreen() {
             {t('proc.intro', { active, crashed, paused })}
           </Win95Text>
         </View>
+        <Win95Button
+          label={t('btn.run')}
+          onPress={() => navigation.navigate('RunDialog')}
+          testID="proc-run"
+        />
       </IntroRow>
 
       <Win95ColHeaders

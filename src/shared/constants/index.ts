@@ -2,13 +2,29 @@ import { Frequency, HabitIconKey } from '@/shared/types/habit';
 
 export const HABIT_ICON_KEYS: HabitIconKey[] = [
   'run',
-  'book',
-  'water',
-  'meditate',
-  'sleep',
+  'walk',
+  'bike',
+  'swim',
   'exercise',
+  'meditate',
+  'pray',
+  'sleep',
+  'water',
   'food',
+  'coffee',
+  'pill',
+  'heart',
+  'sun',
+  'phone',
+  'pets',
+  'plant',
+  'book',
   'study',
+  'journal',
+  'code',
+  'music',
+  'art',
+  'money',
 ];
 
 export const FREQUENCIES: Frequency[] = ['daily', 'weekly', 'custom'];

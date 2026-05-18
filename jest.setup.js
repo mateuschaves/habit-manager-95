@@ -27,3 +27,15 @@ jest.mock('expo-sqlite', () => ({
     Promise.reject(new Error('expo-sqlite is mocked in tests; use the in-memory store'))
   ),
 }));
+
+jest.mock('expo-notifications', () => ({
+  setNotificationHandler: jest.fn(),
+  setNotificationChannelAsync: jest.fn(() => Promise.resolve()),
+  getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
+  scheduleNotificationAsync: jest.fn(() => Promise.resolve('mock-id')),
+  cancelScheduledNotificationAsync: jest.fn(() => Promise.resolve()),
+  getAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  AndroidImportance: { DEFAULT: 3 },
+  SchedulableTriggerInputTypes: { DAILY: 'daily', WEEKLY: 'weekly' },
+}));

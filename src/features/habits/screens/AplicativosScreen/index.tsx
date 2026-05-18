@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import {
   Bezel,
@@ -95,14 +95,15 @@ export function AplicativosScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const { habitsWithStats, today, toggleCompletion } = useHabits();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const groups = useMemo(() => buildGroups(habitsWithStats), [habitsWithStats]);
 
   const doneCount = habitsWithStats.filter((h) => h.stats.completedToday).length;
   const total = habitsWithStats.length;
-  const selected = habitsWithStats.find(
-    (h) => h.stats.status === 'pending' || h.stats.status === 'running'
-  );
+  const selected = selectedId
+    ? habitsWithStats.find((h) => h.id === selectedId) ?? null
+    : null;
 
   return (
     <View style={{ flex: 1 }}>
@@ -117,6 +118,11 @@ export function AplicativosScreen() {
             })}
           </Win95Text>
         </View>
+        <Win95Button
+          label={t('btn.run')}
+          onPress={() => navigation.navigate('RunDialog')}
+          testID="apps-run"
+        />
       </IntroRow>
 
       <Bezel variant="inset" fill containerStyle={{ flex: 1 }}>
@@ -140,7 +146,7 @@ export function AplicativosScreen() {
                       <Row
                         key={h.id}
                         $selected={isSel}
-                        onPress={() => toggleCompletion(h.id)}
+                        onPress={() => setSelectedId(h.id)}
                         onLongPress={() =>
                           navigation.navigate('HabitDetail', { habitId: h.id })
                         }
@@ -200,24 +206,32 @@ export function AplicativosScreen() {
       <Footer>
         <Win95Button
           label={t('apps.postpone')}
-          disabled={!selected}
+          disabled={!selected || selected.stats.completedToday}
           style={{ marginRight: 4 }}
           testID="apps-postpone"
         />
         <Win95Button
           label={t('apps.skip')}
-          disabled={!selected}
+          disabled={!selected || selected.stats.completedToday}
           style={{ marginRight: 4 }}
           testID="apps-skip"
         />
-        <Win95Button
-          label={t('apps.completeNow')}
-          primary
-          icon={<IconCheck size={12} />}
-          disabled={!selected}
-          onPress={() => selected && toggleCompletion(selected.id)}
-          testID="apps-complete"
-        />
+        {selected?.stats.completedToday ? (
+          <Win95Button
+            label={t('apps.undo')}
+            onPress={() => toggleCompletion(selected.id)}
+            testID="apps-undo"
+          />
+        ) : (
+          <Win95Button
+            label={t('apps.completeNow')}
+            primary
+            icon={<IconCheck size={12} />}
+            disabled={!selected || selected.stats.status === 'crashed'}
+            onPress={() => selected && toggleCompletion(selected.id)}
+            testID="apps-complete"
+          />
+        )}
       </Footer>
     </View>
   );

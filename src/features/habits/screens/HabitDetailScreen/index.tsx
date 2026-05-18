@@ -1,7 +1,7 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Alert, ScrollView, View } from 'react-native';
 import {
   Win95Button,
   Win95Desktop,
@@ -33,12 +33,15 @@ import {
 type Nav = NativeStackNavigationProp<RootStackParamList>;
 type Rt = RouteProp<RootStackParamList, 'HabitDetail'>;
 
+const DOW_PT = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
 export function HabitDetailScreen() {
   const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const route = useRoute<Rt>();
   const { getHabit, completions, deleteHabit, today } = useHabits();
   const habit = getHabit(route.params.habitId);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (!habit) navigation.goBack();
@@ -92,6 +95,7 @@ export function HabitDetailScreen() {
         icon={<HabitIcon iconKey={habit.iconKey} size={14} />}
         controls={['close']}
         onClose={() => navigation.goBack()}
+        fill
         style={{ flex: 1 }}
         bodyStyle={{ flex: 1 }}
         testID="detail-window"
@@ -102,8 +106,9 @@ export function HabitDetailScreen() {
             t('detail.tabStats'),
             t('detail.tabReminders'),
           ]}
-          active={1}
-          onChange={() => undefined}
+          active={tab}
+          onChange={setTab}
+          testID="detail-tabs"
         />
         <Win95TabPane style={{ flex: 1 }}>
           <ScrollView style={{ padding: 10 }}>
@@ -126,50 +131,93 @@ export function HabitDetailScreen() {
               </HeaderInfo>
             </Header>
 
-            <StatGrid>
-              <StatCell>
-                <StatBox
-                  label={t('detail.currentStreak')}
-                  value={habit.stats.currentStreak}
-                  unit={t('unit.days')}
-                  hot={habit.stats.currentStreak > 0}
-                  testID="detail-current-streak"
-                />
-              </StatCell>
-              <StatCell>
-                <StatBox
-                  label={t('detail.bestStreak')}
-                  value={habit.stats.bestStreak}
-                  unit={t('unit.days')}
-                />
-              </StatCell>
-              <StatCell>
-                <StatBox
-                  label={t('detail.totalRuns')}
-                  value={habit.stats.totalCompletions}
-                  unit={t('detail.unitTimes')}
-                />
-              </StatCell>
-              <StatCell>
-                <StatBox
-                  label={t('detail.completionRate')}
-                  value={habit.stats.completionRate}
-                  unit="%"
-                />
-              </StatCell>
-            </StatGrid>
+            {tab === 0 && (
+              <View>
+                <Win95GroupBox title={t('field.frequency')}>
+                  <Win95Text>{freqLabel}</Win95Text>
+                  {habit.frequency === 'custom' && habit.days.length > 0 ? (
+                    <Win95Text variant="caption" style={{ marginTop: 4 }}>
+                      {habit.days.map((d) => DOW_PT[d]).join(' · ')}
+                    </Win95Text>
+                  ) : null}
+                </Win95GroupBox>
+                {habit.goalAmount != null ? (
+                  <View style={{ marginTop: 8 }}>
+                    <Win95GroupBox title={t('field.goal')}>
+                      <Win95Text mono>
+                        {habit.goalAmount} {habit.goalUnit ?? ''}
+                      </Win95Text>
+                    </Win95GroupBox>
+                  </View>
+                ) : null}
+              </View>
+            )}
 
-            <Win95GroupBox title={t('detail.consistencyMap')}>
-              <HeatGrid>
-                {heat.map((col, ci) => (
-                  <HeatCol key={ci}>
-                    {col.map((on, ri) => (
-                      <HeatDot key={ri} $on={on} />
+            {tab === 1 && (
+              <View>
+                <StatGrid>
+                  <StatCell>
+                    <StatBox
+                      label={t('detail.currentStreak')}
+                      value={habit.stats.currentStreak}
+                      unit={t('unit.days')}
+                      hot={habit.stats.currentStreak > 0}
+                      testID="detail-current-streak"
+                    />
+                  </StatCell>
+                  <StatCell>
+                    <StatBox
+                      label={t('detail.bestStreak')}
+                      value={habit.stats.bestStreak}
+                      unit={t('unit.days')}
+                    />
+                  </StatCell>
+                  <StatCell>
+                    <StatBox
+                      label={t('detail.totalRuns')}
+                      value={habit.stats.totalCompletions}
+                      unit={t('detail.unitTimes')}
+                    />
+                  </StatCell>
+                  <StatCell>
+                    <StatBox
+                      label={t('detail.completionRate')}
+                      value={habit.stats.completionRate}
+                      unit="%"
+                    />
+                  </StatCell>
+                </StatGrid>
+
+                <Win95GroupBox title={t('detail.consistencyMap')}>
+                  <HeatGrid>
+                    {heat.map((col, ci) => (
+                      <HeatCol key={ci}>
+                        {col.map((on, ri) => (
+                          <HeatDot key={ri} $on={on} />
+                        ))}
+                      </HeatCol>
                     ))}
-                  </HeatCol>
-                ))}
-              </HeatGrid>
-            </Win95GroupBox>
+                  </HeatGrid>
+                </Win95GroupBox>
+              </View>
+            )}
+
+            {tab === 2 && (
+              <View>
+                <Win95GroupBox title={t('field.reminder')}>
+                  <Win95Text mono>
+                    {habit.reminderTime ?? t('reminder.none')}
+                  </Win95Text>
+                </Win95GroupBox>
+                <View style={{ marginTop: 8 }}>
+                  <Win95GroupBox title={t('field.notifyLate')}>
+                    <Win95Text>
+                      {habit.notifyIfLate ? '✓' : '—'}
+                    </Win95Text>
+                  </Win95GroupBox>
+                </View>
+              </View>
+            )}
 
             <Footer>
               <Win95Button

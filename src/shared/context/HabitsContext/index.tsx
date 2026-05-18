@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { createDefaultStore, HabitStore } from '@/shared/db';
+import { syncAllHabits } from '@/shared/notifications';
 import {
   Completion,
   Habit,
@@ -17,6 +18,10 @@ import {
 import { todayISO } from '@/shared/utils/date';
 import { buildStats } from '@/shared/utils/streak';
 import { HabitsContextValue } from './types';
+
+function silently<T>(fn: () => Promise<T>): Promise<T | undefined> {
+  return fn().catch(() => undefined);
+}
 
 const HabitsContext = createContext<HabitsContextValue | undefined>(undefined);
 
@@ -64,6 +69,12 @@ export function HabitsProvider({ children, store, today }: ProviderProps) {
     };
   }, [load]);
 
+  // Resync OS-level reminders whenever the habit list changes.
+  useEffect(() => {
+    if (loading) return;
+    silently(() => syncAllHabits(habits));
+  }, [habits, loading]);
+
   const habitsWithStats = useMemo<HabitWithStats[]>(() => {
     return habits.map((habit) => {
       const habitCompletions = completions.filter((c) => c.habitId === habit.id);
@@ -78,6 +89,11 @@ export function HabitsProvider({ children, store, today }: ProviderProps) {
       ) ?? null
     );
   }, [habitsWithStats, acknowledged]);
+
+  // All notification scheduling flows through the `[habits, loading]` effect
+  // above (single source of truth). The mutations just touch the store and
+  // refresh state — the effect picks up the change and re-syncs the OS-level
+  // reminders, which prevents stale pushes after edits/deletes.
 
   const addHabit = useCallback(
     async (input: NewHabitInput) => {

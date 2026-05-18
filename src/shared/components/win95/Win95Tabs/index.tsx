@@ -23,7 +23,9 @@ export function Win95Tabs({ tabs, active, onChange, testID }: Win95TabsProps) {
             onPress={() => onChange(i)}
             testID={`${testID ?? 'tabs'}-tab-${i}`}
           >
-            <Win95Text bold={isActive}>{label}</Win95Text>
+            <Win95Text bold={isActive} numberOfLines={1}>
+              {label}
+            </Win95Text>
           </Tab>
         );
       })}

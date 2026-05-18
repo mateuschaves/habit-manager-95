@@ -18,6 +18,8 @@ interface Win95WindowProps {
   inactive?: boolean;
   controls?: Array<'min' | 'max' | 'close'>;
   fullBleed?: boolean;
+  /** Stretch the bezel chain so the body can flex:1 in a constrained parent. */
+  fill?: boolean;
   onClose?: () => void;
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
@@ -31,6 +33,7 @@ export function Win95Window({
   inactive,
   controls = ['close'],
   fullBleed,
+  fill,
   onClose,
   children,
   style,
@@ -38,7 +41,7 @@ export function Win95Window({
   testID,
 }: Win95WindowProps) {
   return (
-    <Bezel variant="raised" fill containerStyle={style} testID={testID}>
+    <Bezel variant="raised" fill={fill} containerStyle={style} testID={testID}>
       <TitleBar $inactive={inactive}>
         <TitleText>
           {icon ? <TitleIconSlot>{icon}</TitleIconSlot> : null}

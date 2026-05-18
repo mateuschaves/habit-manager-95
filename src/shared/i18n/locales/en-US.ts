@@ -129,6 +129,14 @@ export const enUS: Record<TranslationKey, string> = {
   'cfg.help.annotate': 'Annotate',
   'cfg.help.display': 'Display',
   'cfg.help.close': 'Close',
+  'cfg.help.searchPlaceholder': 'Type the word(s) you want to find:',
+  'cfg.help.searchEmpty': 'No topics found.',
+  'cfg.help.indexHint': 'Type the first letters, or click a topic:',
+  'cfg.help.noArticle': 'Select a topic on the left to view content.',
+  'cfg.help.article.taskmgr':
+    'The Task Manager shows every habit as a process. The Applications tab lists today\'s routine. Processes is the technical view (PID, memory, uptime). Use End process to terminate today\'s habit run.',
+  'cfg.help.article.streaks':
+    'A streak is the number of consecutive days you completed the habit. Skipping a day resets it to zero — and triggers a BSOD with the classic system error sound. It\'s not personal, just the kernel.',
 
   'splash.bios': 'Habit BIOS v4.51',
   'splash.copyright': 'Copyright (C) 1995-2026, Habit Industries Inc.',
@@ -222,6 +230,7 @@ export const enUS: Record<TranslationKey, string> = {
   'apps.postpone': 'Snooze 1h',
   'apps.skip': 'Skip today',
   'apps.completeNow': 'Complete now',
+  'apps.undo': 'Undo',
   'apps.line.done': 'Completed at {time}',
   'apps.line.crashed': 'No response. {n}-day streak lost.',
   'apps.line.pending': 'Next reminder at {time}',
@@ -307,6 +316,8 @@ export const enUS: Record<TranslationKey, string> = {
   'settings.resetConfirm':
     'This permanently deletes ALL habits and history. Continue?',
   'settings.resetDone': 'System formatted. Start over.',
+  'settings.rerunSetup': 'Re-run setup...',
+  'settings.maintenance': 'Maintenance',
 
   'about.title': 'About Habit Manager 95',
   'about.version': 'Version {v}',

@@ -127,6 +127,8 @@ export const ItemField = styled.View`
 
 export const Footer = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-end;
   margin-top: 12px;
+  row-gap: 4px;
 `;

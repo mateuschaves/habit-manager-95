@@ -4,6 +4,7 @@ import React from 'react';
 import { Alert, ScrollView } from 'react-native';
 import {
   Bezel,
+  Win95Button,
   Win95Checkbox,
   Win95Desktop,
   Win95GroupBox,
@@ -123,6 +124,7 @@ export function SettingsScreen() {
         icon={<IconGear size={14} />}
         controls={['close']}
         onClose={() => navigation.goBack()}
+        fill
         style={{ flex: 1 }}
         bodyStyle={{ flex: 1 }}
         testID="settings-window"
@@ -180,6 +182,19 @@ export function SettingsScreen() {
                 onToggle={setNotifyLate}
                 label={t('settings.notifyLate')}
                 testID="settings-notify"
+              />
+            </Win95GroupBox>
+
+            <Win95GroupBox title={t('settings.maintenance')}>
+              <Win95Button
+                label={t('settings.rerunSetup')}
+                onPress={() =>
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Onboarding' }],
+                  })
+                }
+                testID="settings-rerun-setup"
               />
             </Win95GroupBox>
           </Panel>
