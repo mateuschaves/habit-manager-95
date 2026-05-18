@@ -124,9 +124,9 @@ Imports usam o alias `@/` apontando para `src/` (configurado em
 - **Camada de dados** — `createDefaultStore()` tenta abrir o SQLite e,
   em caso de falha, cai para um store em memória, para que o app
   continue utilizável em vez de quebrar.
-- **BSOD** — um observador no navegador (`BsodWatcher`) escuta o
-  `HabitsContext` e, ao detectar uma sequência recém-quebrada na tela
-  principal, navega para a tela de tela azul.
+- **BSOD** — um observador na camada de navegação (`BsodWatcher`)
+  escuta o `HabitsContext` e, ao detectar uma sequência recém-quebrada
+  na tela principal, navega para a tela azul.
 - **Tema** — `SettingsContext` guarda a paleta, brilho e profundidade
   de cor; `App.tsx` aplica sobreposições para simular o "botão de
   brilho" e o seletor de profundidade de cor de um monitor da época.
