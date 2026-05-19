@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Habit Manager 95 — Hábitos como processos</title>
+<meta name="description" content="Um habit tracker que parece o Gerenciador de Tarefas do Windows 95. Cada hábito é um .exe. Streak quebrado retorna um BSOD. Sem cloud, sem culpa, sem mascote."/>
+<meta name="theme-color" content="#008080"/>
+<link rel="icon" href="favicon.png"/>
+<meta property="og:title" content="Habit Manager 95 — Hábitos como processos"/>
+<meta property="og:description" content="taskmgr para a sua vida. Cada hábito é um .exe. Streak quebrado retorna um BSOD."/>
+<meta property="og:image" content="icon.png"/>
+<meta property="og:type" content="website"/>
+
+<style>
+/* ======================================================================
+   Habit Manager 95 — design tokens (copiados do design system Win95)
+   ====================================================================== */
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif.woff2') format('woff2'),
+       url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif.woff') format('woff');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'MS Sans Serif';
+  src: url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif_bold.woff2') format('woff2'),
+       url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif_bold.woff') format('woff');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+:root {
+  --hm-bg:                 #c0c0c0;
+  --hm-surface:            #c0c0c0;
+  --hm-surface-raised:     #c0c0c0;
+  --hm-surface-pressed:    #b8b8b8;
+  --hm-surface-deep:       #ffffff;
+  --hm-title-bar:          #000080;
+  --hm-title-bar-2:        #1084d0;
+  --hm-title-bar-inactive: #808080;
+  --hm-border-light:       #ffffff;
+  --hm-border-light-2:     #dfdfdf;
+  --hm-border-dark:        #808080;
+  --hm-border-darker:      #000000;
+  --hm-text:               #000000;
+  --hm-text-on-dark:       #ffffff;
+  --hm-text-disabled:      #808080;
+  --hm-text-disabled-hi:   #ffffff;
+  --hm-success:            #008000;
+  --hm-warning:            #c08000;
+  --hm-danger:             #800000;
+  --hm-info:               #000080;
+  --hm-selection-bg:       #000080;
+  --hm-selection-fg:       #ffffff;
+  --hm-desktop:            #008080;
+  --hm-progress:           #000080;
+
+  --hm-font: 'MS Sans Serif', 'Pixelated MS Sans Serif', Tahoma, Geneva, Verdana, sans-serif;
+  --hm-font-mono: 'Cascadia Mono', 'Lucida Console', 'Courier New', monospace;
+  --hm-fz-caption: 10px;
+  --hm-fz-body:    12px;
+  --hm-fz-label:   13px;
+  --hm-fz-title:   14px;
+  --hm-fz-heading: 16px;
+
+  --hm-s-1: 2px;  --hm-s-2: 4px;  --hm-s-3: 6px;  --hm-s-4: 8px;
+  --hm-s-5: 12px; --hm-s-6: 16px; --hm-s-7: 24px; --hm-s-8: 32px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--hm-font);
+  font-size: var(--hm-fz-body);
+  color: var(--hm-text);
+  background: var(--hm-desktop);
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  font-smooth: never;
+  /* dotted desktop pattern, igual ao slide hero da App Store */
+  background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1.4px);
+  background-size: 22px 24px;
+  min-height: 100vh;
+  padding-bottom: 44px; /* espaço para a taskbar fixa */
+}
+img { image-rendering: pixelated; }
+
+/* ── Bezel system — o coração do Win95 ──────────────────────────────── */
+.bezel-raised {
+  border-top: 1px solid var(--hm-border-light);
+  border-left: 1px solid var(--hm-border-light);
+  border-right: 1px solid var(--hm-border-darker);
+  border-bottom: 1px solid var(--hm-border-darker);
+  box-shadow: inset 1px 1px 0 0 var(--hm-border-light-2),
+              inset -1px -1px 0 0 var(--hm-border-dark);
+  background: var(--hm-surface-raised);
+}
+.bezel-pressed {
+  border-top: 1px solid var(--hm-border-darker);
+  border-left: 1px solid var(--hm-border-darker);
+  border-right: 1px solid var(--hm-border-light);
+  border-bottom: 1px solid var(--hm-border-light);
+  box-shadow: inset 1px 1px 0 0 var(--hm-border-dark),
+              inset -1px -1px 0 0 var(--hm-border-light-2);
+  background: var(--hm-surface-pressed);
+}
+.bezel-inset {
+  border-top: 1px solid var(--hm-border-dark);
+  border-left: 1px solid var(--hm-border-dark);
+  border-right: 1px solid var(--hm-border-light);
+  border-bottom: 1px solid var(--hm-border-light);
+  box-shadow: inset 1px 1px 0 0 var(--hm-border-darker),
+              inset -1px -1px 0 0 var(--hm-border-light-2);
+  background: var(--hm-surface-deep);
+}
+.bezel-thin-raised {
+  border-top: 1px solid var(--hm-border-light);
+  border-left: 1px solid var(--hm-border-light);
+  border-right: 1px solid var(--hm-border-dark);
+  border-bottom: 1px solid var(--hm-border-dark);
+}
+.bezel-thin-inset {
+  border-top: 1px solid var(--hm-border-dark);
+  border-left: 1px solid var(--hm-border-dark);
+  border-right: 1px solid var(--hm-border-light);
+  border-bottom: 1px solid var(--hm-border-light);
+}
+
+/* ── Window + title bar ─────────────────────────────────────────────── */
+.window { background: var(--hm-surface); padding: 2px; }
+.title-bar {
+  height: 22px;
+  background: linear-gradient(90deg, var(--hm-title-bar) 0%, var(--hm-title-bar-2) 100%);
+  color: var(--hm-text-on-dark);
+  font-size: var(--hm-fz-title);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  padding: 0 2px 0 4px;
+  user-select: none;
+}
+.title-bar.inactive { background: var(--hm-title-bar-inactive); }
+.title-bar-text {
+  flex: 1; display: flex; align-items: center; gap: 4px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.title-bar-controls { display: flex; gap: 2px; }
+.title-bar-btn {
+  width: 16px; height: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--hm-surface); color: var(--hm-text);
+  font-size: 9px; font-weight: 700; line-height: 1; padding: 0;
+}
+.menu-bar {
+  display: flex; padding: 1px 2px;
+  background: var(--hm-surface);
+  border-bottom: 1px solid var(--hm-border-dark);
+  box-shadow: 0 1px 0 var(--hm-border-light);
+}
+.menu-bar span { padding: 2px 8px; font-size: var(--hm-fz-body); }
+.menu-bar span u { text-decoration: underline; }
+
+/* ── Win95 button ───────────────────────────────────────────────────── */
+.w95-btn {
+  min-width: 75px; min-height: 23px;
+  padding: 4px 14px;
+  font: inherit; font-size: var(--hm-fz-body);
+  color: var(--hm-text);
+  background: var(--hm-surface);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  text-decoration: none;
+}
+.w95-btn:active { padding: 5px 13px 3px 15px; }
+.w95-btn.primary span { outline: 1px dotted var(--hm-text); outline-offset: 2px; padding: 0 1px; }
+.w95-btn.big { min-height: 34px; padding: 8px 22px; font-size: var(--hm-fz-label); }
+.w95-btn.big:active { padding: 9px 21px 7px 23px; }
+
+/* ── Tabs ───────────────────────────────────────────────────────────── */
+.tabs { display: flex; align-items: flex-end; position: relative; z-index: 1; margin-bottom: -1px; }
+.tab {
+  padding: 3px 10px 2px; margin-right: -1px;
+  background: var(--hm-surface);
+  border-top: 1px solid var(--hm-border-light);
+  border-left: 1px solid var(--hm-border-light);
+  border-right: 1px solid var(--hm-border-darker);
+  border-top-left-radius: 3px; border-top-right-radius: 3px;
+  font-size: var(--hm-fz-body); position: relative;
+  box-shadow: inset 1px 1px 0 var(--hm-border-light-2);
+}
+.tab.active { padding: 5px 10px 4px; top: -2px; z-index: 2; }
+.tab u { text-decoration: underline; }
+.tab-pane { background: var(--hm-surface); padding: 8px; position: relative; z-index: 1; }
+
+/* ── Tabela de processos ────────────────────────────────────────────── */
+.col-headers, .proc-row {
+  display: grid;
+  grid-template-columns: 1.5fr 0.7fr 0.9fr 0.6fr 1.2fr;
+}
+.col-headers { background: var(--hm-surface); border-bottom: 1px solid var(--hm-border-darker); }
+.col-headers > div {
+  padding: 2px 6px; font-size: var(--hm-fz-body); background: var(--hm-surface);
+  border-top: 1px solid var(--hm-border-light);
+  border-right: 1px solid var(--hm-border-dark);
+}
+.col-headers > div.r { text-align: right; }
+.proc-list { background: #fff; }
+.proc-row {
+  gap: 4px; padding: 3px 6px; align-items: center;
+  font-size: var(--hm-fz-body);
+}
+.proc-row.sel { background: var(--hm-selection-bg); color: var(--hm-selection-fg); }
+.proc-row > div { display: flex; align-items: center; gap: 5px; overflow: hidden; white-space: nowrap; }
+.proc-row > div.r { justify-content: flex-end; }
+.mono { font-family: var(--hm-font-mono); font-size: 11px; }
+.status { display: inline-flex; align-items: center; gap: 4px; }
+.status .dot { width: 8px; height: 8px; border: 1px solid #000; display: inline-block; flex: 0 0 8px; }
+
+/* ── Group box ──────────────────────────────────────────────────────── */
+fieldset.gbox {
+  border: 1px solid var(--hm-border-dark);
+  box-shadow: inset -1px -1px 0 var(--hm-border-light), 1px 1px 0 var(--hm-border-light);
+  padding: 10px 8px 8px; margin: 0;
+}
+fieldset.gbox legend { padding: 0 4px; font-size: var(--hm-fz-body); }
+
+/* ── Progress (segmentado) ──────────────────────────────────────────── */
+.progress { background: #fff; padding: 2px; height: 18px; display: flex; }
+.progress .track { display: flex; gap: 2px; flex: 1; }
+.progress .seg { flex: 1; }
+
+/* ── Layout da landing ──────────────────────────────────────────────── */
+.page { max-width: 1080px; margin: 0 auto; padding: 28px 18px 64px; }
+.win { margin: 0 0 28px; }
+.win > .body { padding: 14px; }
+
+.hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 22px; align-items: start; }
+.eyebrow {
+  font-family: var(--hm-font-mono); font-size: 12px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--hm-selection-bg); margin: 0 0 10px;
+}
+h1.headline {
+  font-size: 44px; line-height: 1.05; margin: 0 0 14px;
+  letter-spacing: -0.01em; font-weight: 700;
+}
+h1.headline .y { color: #fcff00; -webkit-text-stroke: 1px #000; }
+.lead { font-size: 15px; line-height: 1.55; margin: 0 0 20px; max-width: 46ch; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.caption {
+  font-family: var(--hm-font-mono); font-size: 13px;
+  text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.75;
+}
+
+.section-head { margin: 0 0 18px; }
+.section-head .idx {
+  font-family: var(--hm-font-mono); font-size: 13px;
+  color: var(--hm-selection-bg); display: block; margin-bottom: 4px;
+}
+.section-head h2 { font-size: 30px; margin: 0 0 8px; line-height: 1.1; letter-spacing: -0.01em; }
+.section-head p { font-size: 14px; line-height: 1.5; margin: 0; max-width: 56ch; opacity: 0.85; }
+
+.feature { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: center; }
+.feature.rev .copy { order: 2; }
+
+/* BSOD */
+.bsod {
+  background: #0000aa; color: #fff;
+  font-family: var(--hm-font-mono); font-size: 13px;
+  padding: 26px 22px; line-height: 1.5;
+}
+.bsod .badge {
+  display: inline-block; background: #c0c0c0; color: #0000aa;
+  padding: 0 8px; font-weight: 700; font-size: 14px;
+  font-family: var(--hm-font);
+}
+.bsod b { color: #fcff00; }
+.bsod .ind { margin-left: 22px; }
+
+/* Performance graph */
+.perf-graph .bezel-inset { background: #000; height: 78px; position: relative; overflow: hidden; }
+.perf-graph .bars { position: absolute; inset: 0; display: flex; align-items: flex-end; }
+.perf-graph .bars > i { flex: 1; border-right: 1px solid #000; display: block; }
+.perf-graph .grid-l {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg,  #003000 0 1px, transparent 1px 12.5%),
+    repeating-linear-gradient(90deg, #003000 0 1px, transparent 1px 10%);
+}
+.perf-head { display: flex; justify-content: space-between; font-size: 11px; padding: 0 1px 2px; }
+.totais { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 12px; }
+.totais b { font-family: var(--hm-font-mono); font-weight: 400; }
+
+/* Spec table */
+.spec { width: 100%; border-collapse: collapse; font-size: 13px; }
+.spec td { padding: 7px 10px; border-bottom: 1px solid var(--hm-border-dark); }
+.spec tr td:first-child { width: 34%; color: var(--hm-text-disabled); }
+.spec tr:last-child td { border-bottom: 0; }
+.spec b { font-weight: 700; }
+
+ul.dotlist { margin: 0; padding: 0; list-style: none; }
+ul.dotlist li {
+  display: flex; gap: 9px; font-size: 14px; line-height: 1.5;
+  padding: 7px 0; border-bottom: 1px solid var(--hm-border-light-2);
+}
+ul.dotlist li:last-child { border-bottom: 0; }
+ul.dotlist .mk { color: var(--hm-success); font-weight: 700; flex: 0 0 auto; }
+
+/* Wizard mock */
+.wiz { display: grid; grid-template-columns: 96px 1fr; gap: 10px; }
+.wiz .steps { display: flex; flex-direction: column; gap: 6px; }
+.wiz .steps .s {
+  padding: 6px 8px; font-size: 12px; background: #fff;
+  border: 1px solid var(--hm-border-dark);
+}
+.wiz .steps .s.on { background: var(--hm-selection-bg); color: #fff; border-color: #000; }
+.wiz .form { display: flex; flex-direction: column; gap: 9px; }
+.field { display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+.field .ip {
+  background: #fff; height: 22px; display: flex; align-items: center;
+  padding: 0 4px; font-size: 12px;
+}
+.icon-grid { display: flex; gap: 4px; }
+.icon-grid .ic {
+  width: 26px; height: 26px; background: var(--hm-surface);
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-grid .ic.on { background: var(--hm-selection-bg); }
+
+/* ── Taskbar ────────────────────────────────────────────────────────── */
+.taskbar {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 36px;
+  background: var(--hm-surface);
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 4px;
+  z-index: 50;
+}
+.start-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-weight: 700; font-size: 13px; padding: 4px 10px 4px 7px;
+  background: var(--hm-surface); color: var(--hm-text);
+  text-decoration: none; cursor: pointer;
+}
+.tasks { display: flex; gap: 4px; flex: 1; overflow: hidden; }
+.tasks a {
+  font-size: 12px; padding: 4px 12px; min-width: 0;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--hm-surface); color: var(--hm-text);
+  text-decoration: none; white-space: nowrap;
+}
+.tray {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 10px; font-size: 12px;
+  font-family: var(--hm-font-mono);
+}
+.flag {
+  display: inline-grid; grid-template-columns: 7px 7px; grid-template-rows: 7px 7px;
+  gap: 1px; flex: 0 0 auto;
+}
+.flag i { display: block; }
+
+.legend-tip {
+  font-family: var(--hm-font-mono); font-size: 11px;
+  opacity: 0.7; margin-top: 10px;
+}
+hr.hr-pixel {
+  height: 2px; border: 0; margin: 16px 0;
+  background: linear-gradient(to bottom,
+    var(--hm-border-dark) 0, var(--hm-border-dark) 1px,
+    var(--hm-border-light) 1px, var(--hm-border-light) 2px);
+}
+
+@media (max-width: 860px) {
+  .hero-grid, .feature { grid-template-columns: 1fr; }
+  .feature.rev .copy { order: 0; }
+  h1.headline { font-size: 34px; }
+  .section-head h2 { font-size: 24px; }
+  .tray .clock-wrap { display: none; }
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+  <!-- ══ HERO ══════════════════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="topo">
+    <div class="title-bar">
+      <div class="title-bar-text">
+        <span aria-hidden="true" style="display:inline-flex">
+          <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges">
+            <rect x="1" y="2" width="12" height="10" fill="#fff" stroke="#000"/>
+            <rect x="1" y="2" width="12" height="3" fill="#000080"/>
+            <rect x="3" y="7" width="3" height="3" fill="#008000"/>
+            <rect x="8" y="7" width="3" height="3" fill="#800000"/>
+          </svg>
+        </span>
+        <span>Gerenciador de Hábitos — Habit Manager 95</span>
+      </div>
+      <div class="title-bar-controls">
+        <button class="title-bar-btn bezel-raised" aria-label="Minimizar">_</button>
+        <button class="title-bar-btn bezel-raised" aria-label="Maximizar">▢</button>
+        <button class="title-bar-btn bezel-raised" style="margin-left:2px" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <div class="menu-bar">
+      <span><u>A</u>rquivo</span><span><u>O</u>pções</span><span><u>E</u>xibir</span>
+      <span><u>J</u>anela</span><span><u>A</u>juda</span>
+    </div>
+    <div class="body">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">C:\&gt; taskmgr.exe _</p>
+          <h1 class="headline">Gerencie hábitos<br/><span class="y">como processos.</span></h1>
+          <p class="lead">
+            Um habit tracker que parece o Gerenciador de Tarefas do Windows&nbsp;95.
+            Cada hábito é um <code>.exe</code> rodando no seu sistema operacional pessoal.
+            Streak quebrado retorna um BSOD. <b>Sem cloud, sem culpa, sem mascote.</b>
+          </p>
+          <div class="cta">
+            <a class="w95-btn big primary bezel-raised" href="#download"><span>▸ Baixar o app</span></a>
+            <a class="w95-btn big bezel-raised" href="https://github.com/mateuschaves/habit-manager-95" target="_blank" rel="noopener">Ver no GitHub</a>
+          </div>
+          <p class="caption">&gt; taskmgr para a sua vida</p>
+        </div>
+
+        <!-- Mockup: tabela de Processos -->
+        <div class="bezel-inset" style="background:var(--hm-surface);padding:6px">
+          <div class="tabs">
+            <div class="tab">A<u>p</u>licativos</div>
+            <div class="tab active"><u>P</u>rocessos</div>
+            <div class="tab"><u>D</u>esempenho</div>
+            <div class="tab"><u>H</u>istórico</div>
+          </div>
+          <div class="tab-pane bezel-thin-raised">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px">
+              <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges"><rect x="1" y="2" width="12" height="10" fill="#fff" stroke="#000"/><rect x="1" y="2" width="12" height="3" fill="#000080"/><rect x="3" y="7" width="2" height="3" fill="#008000"/><rect x="9" y="7" width="2" height="3" fill="#800000"/></svg>
+              <span>9 processos ativos · 1 travado · 1 suspenso</span>
+            </div>
+            <div class="col-headers">
+              <div>Imagem</div><div class="r">PID</div><div class="r">Memória</div><div class="r">Uptime</div><div>Status</div>
+            </div>
+            <div class="proc-list bezel-inset" id="proc-list"></div>
+            <div style="display:flex;gap:8px;margin-top:6px;font-size:11px;flex-wrap:wrap">
+              <span>CPU: <b class="mono">67%</b></span><span>•</span>
+              <span>Mem: <b class="mono">607K / ∞</b></span><span>•</span>
+              <span>Threads: <b class="mono">9</b></span>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:8px;justify-content:flex-end">
+              <span class="w95-btn bezel-raised">Prioridade...</span>
+              <span class="w95-btn bezel-raised">Propriedades</span>
+              <span class="w95-btn primary bezel-raised" style="color:var(--hm-danger)"><span>✕ Encerrar processo</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 01 · PROCESSOS ════════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="processos">
+    <div class="title-bar"><div class="title-bar-text">01 · Processos</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="feature">
+        <div class="copy">
+          <div class="section-head">
+            <span class="idx">01 / process.list</span>
+            <h2>Cada hábito é um <code>.exe</code> rodando</h2>
+            <p>Tabela densa com PID, memória, uptime e status. <b>Rodando</b>, <b>Pendente</b>,
+            <b>Não responde</b>, <b>Suspenso</b>, <b>Concluído</b> — o mesmo vocabulário do
+            Gerenciador de Tarefas, aplicado à sua rotina. Sem motivação. Sem mascote.</p>
+          </div>
+          <p class="caption">&gt; taskmgr para a sua vida</p>
+        </div>
+        <div class="bezel-inset" style="background:var(--hm-surface);padding:6px">
+          <div class="col-headers">
+            <div>Imagem</div><div class="r">PID</div><div class="r">Memória</div><div class="r">Uptime</div><div>Status</div>
+          </div>
+          <div class="proc-list bezel-inset" id="proc-list-2"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 02 · BSOD ═════════════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="bsod">
+    <div class="title-bar"><div class="title-bar-text">02 · Streak quebrado</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="feature rev">
+        <div class="copy">
+          <div class="section-head">
+            <span class="idx">02 / 0x000000C0</span>
+            <h2>Seu hábito não está respondendo.</h2>
+            <p>Streaks quebrados retornam um BSOD. Quebrar um streak num app fofinho dá culpa;
+            receber um <i>"erro fatal"</i> dá risada — e, paradoxalmente, engaja mais porque é
+            altamente compartilhável. Cada screenshot é conteúdo.</p>
+          </div>
+          <p class="caption">&gt; o cliente já tirou print</p>
+        </div>
+        <div class="bezel-inset" style="padding:2px">
+          <div class="bsod">
+            <div style="text-align:center;margin-bottom:18px"><span class="badge">Habit Manager</span></div>
+            <p style="margin:0 0 14px">Um erro fatal ocorreu em <b>meditar.exe</b>. Streak de <b>12 dias</b> foi perdido.</p>
+            <p style="margin:0 0 14px">A culpa é compartilhada entre o sistema operacional (você) e o subprocesso (também você). Não foi possível recuperar o estado anterior.</p>
+            <div class="ind" style="margin-bottom:14px;font-size:12px">
+              <div>*&nbsp; Verifique se o lembrete está agendado corretamente</div>
+              <div>*&nbsp; Reduza a meta para um valor sustentável</div>
+              <div>*&nbsp; Considere agrupar com outro hábito (habit stacking)</div>
+            </div>
+            <div class="ind" style="margin-bottom:14px;font-size:11px">
+              <div>STOP: 0x000000C0 (0x00000000, 0xC0000005, 0x80544E50)</div>
+              <div>PROCESS_NAME:&nbsp; meditar.exe</div>
+              <div>BUGCHECK_STR:&nbsp; STREAK_BROKEN_INTERRUPT</div>
+            </div>
+            <p style="text-align:center;margin:0;font-size:13px">Toque qualquer lugar da tela para continuar _</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 03 · DESEMPENHO ═══════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="desempenho">
+    <div class="title-bar"><div class="title-bar-text">03 · grafico.exe</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="feature">
+        <div class="copy">
+          <div class="section-head">
+            <span class="idx">03 / perfmon</span>
+            <h2>Performance monitor pra sua vida</h2>
+            <p>Consistência, foco, streaks. Em verde-fósforo, sobre fundo preto.
+            Gráficos pixel-art estilo monitor de recursos — sem confete, sem
+            "você arrasou hoje!".</p>
+          </div>
+          <p class="caption">&gt; grafico.exe</p>
+        </div>
+        <div class="bezel-inset" style="background:#000;padding:8px;display:flex;flex-direction:column;gap:8px">
+          <div class="perf-graph">
+            <div class="perf-head" style="color:#00ff00"><span>Consistência (12 semanas)</span><span class="mono">83%</span></div>
+            <div class="bezel-inset" id="g1"><div class="grid-l"></div><div class="bars"></div></div>
+          </div>
+          <div class="perf-graph">
+            <div class="perf-head" style="color:#00ffff"><span>Foco (últimos 7 dias)</span><span class="mono">68%</span></div>
+            <div class="bezel-inset" id="g2"><div class="grid-l"></div><div class="bars"></div></div>
+          </div>
+          <fieldset class="gbox" style="background:var(--hm-surface)">
+            <legend>Totais</legend>
+            <div class="totais">
+              <span>Streak médio:</span><b>15.6 dias</b>
+              <span>Maior streak ativo:</span><b>hidratar.exe (47d)</b>
+              <span>Taxa semanal:</span><b>83%</b>
+              <span>Travamentos no mês:</span><b>2</b>
+              <span>Tempo de atividade:</span><b>219 dias</b>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 04 · SETUP WIZARD ═════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="setup">
+    <div class="title-bar"><div class="title-bar-text">04 · A:\install.exe</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="feature rev">
+        <div class="copy">
+          <div class="section-head">
+            <span class="idx">04 / setup.wizard</span>
+            <h2>Setup wizard. Cinco minutos.</h2>
+            <p>Escolha do catálogo, personalize cada <code>.exe</code> — nome, ícone,
+            frequência, lembrete, meta — e agende. Sem cadastro. Sem login social.
+            Sem opt-in de analytics, porque não tem analytics.</p>
+          </div>
+          <p class="caption">&gt; A:\install.exe</p>
+        </div>
+        <div class="bezel-inset" style="background:var(--hm-surface);padding:8px">
+          <div style="font-size:11px;margin-bottom:8px">Setup do Habit Manager 95 — Passo 3 de 4: Personalizar</div>
+          <div class="wiz">
+            <div class="steps">
+              <div class="s">1. Bem-vindo</div>
+              <div class="s">2. Componentes</div>
+              <div class="s on">3. Personalizar</div>
+              <div class="s">4. Instalando</div>
+            </div>
+            <div class="form">
+              <div class="field"><span>Nome do processo</span>
+                <div class="ip bezel-inset"><span class="mono">meditar</span><span style="opacity:.5">.exe</span></div>
+              </div>
+              <div class="field"><span>Ícone</span>
+                <div class="icon-grid">
+                  <span class="ic bezel-raised on" id="wz-i1"></span>
+                  <span class="ic bezel-raised" id="wz-i2"></span>
+                  <span class="ic bezel-raised" id="wz-i3"></span>
+                  <span class="ic bezel-raised" id="wz-i4"></span>
+                  <span class="ic bezel-raised" id="wz-i5"></span>
+                </div>
+              </div>
+              <div class="field"><span>Frequência</span>
+                <div style="display:flex;gap:14px;font-size:12px">
+                  <label>● Diário</label><label>○ Semanal</label><label>○ Dias específicos</label>
+                </div>
+              </div>
+              <div class="field"><span>Lembrete</span>
+                <div class="ip bezel-inset" style="justify-content:space-between"><span>07:00</span><span class="bezel-raised" style="padding:0 4px">▾</span></div>
+              </div>
+              <div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px">
+                <span class="w95-btn bezel-raised">&lt; Voltar</span>
+                <span class="w95-btn primary bezel-raised"><span>Avançar &gt;</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 05 · OFFLINE / PRIVACY ════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="offline">
+    <div class="title-bar"><div class="title-bar-text">05 · C:\users\voce</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="feature">
+        <div class="copy">
+          <div class="section-head">
+            <span class="idx">05 / sqlite.local</span>
+            <h2>Tudo <span style="color:#c70000">offline.</span> Tudo seu.</h2>
+            <p>Sem cloud. Sem ads. Sem mascote. Seu histórico mora em SQLite no
+            seu telefone — e em lugar nenhum mais. Zero requests para servidor.</p>
+          </div>
+          <p class="caption">&gt; C:\users\voce</p>
+        </div>
+        <fieldset class="gbox" style="background:var(--hm-surface)">
+          <legend>Privacidade</legend>
+          <ul class="dotlist">
+            <li><span class="mk">✓</span><span><b>Data Not Collected</b> — zero analytics no MVP, zero login social.</span></li>
+            <li><span class="mk">✓</span><span><b>SQLite local</b> + AsyncStorage para settings. 100% offline.</span></li>
+            <li><span class="mk">✓</span><span><b>Backup via Share</b> — JSON nativo, exportado por você quando quiser.</span></li>
+            <li><span class="mk">✓</span><span><b>App Tracking Transparency</b> — não solicitado. Não precisa.</span></li>
+            <li><span class="mk">✓</span><span><b>MIT</b> — código aberto. "Por que reservar copyright em algo que parece pirataria de 1996."</span></li>
+          </ul>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ STACK ═════════════════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="stack">
+    <div class="title-bar"><div class="title-bar-text">Propriedades do Sistema</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body">
+      <div class="section-head"><span class="idx">specs / stack.sys</span><h2>Construído pra durar 30 anos</h2></div>
+      <div class="bezel-inset" style="background:#fff">
+        <table class="spec">
+          <tr><td>Runtime</td><td><b>Expo 55</b> + <b>React Native 0.83</b></td></tr>
+          <tr><td>Linguagem</td><td><b>TypeScript 5.9</b></td></tr>
+          <tr><td>Persistência</td><td>React Context + <b>expo-sqlite</b> (fallback in-memory p/ web)</td></tr>
+          <tr><td>Notificações</td><td><b>expo-notifications</b> — single-source-of-truth</td></tr>
+          <tr><td>Styling</td><td><b>styled-components/native</b> + tema dinâmico por paleta</td></tr>
+          <tr><td>Fontes</td><td><b>Pixelify Sans</b> (UI) + <b>VT323</b> (mono)</td></tr>
+          <tr><td>Testes</td><td><b>Jest</b> + Testing Library — <b>88 testes verdes</b></td></tr>
+        </table>
+      </div>
+      <p class="legend-tip">4 temas: Classic Win95 · Plum · Hot Dog Stand · High Contrast Black.</p>
+    </div>
+  </section>
+
+  <!-- ══ DOWNLOAD ══════════════════════════════════════════════════ -->
+  <section class="window bezel-raised win" id="download">
+    <div class="title-bar"><div class="title-bar-text">Executar</div>
+      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">✕</button></div>
+    </div>
+    <div class="body" style="text-align:center;padding:34px 18px">
+      <img src="icon.png" alt="Habit Manager 95" width="84" height="84" class="bezel-raised" style="padding:4px;background:#fff"/>
+      <h2 style="font-size:26px;margin:16px 0 6px">Habit Manager 95</h2>
+      <p style="margin:0 0 4px;font-size:14px">Hábitos como processos.</p>
+      <p class="caption" style="margin:0 0 22px">&gt; instalar agora</p>
+      <div class="cta" style="justify-content:center">
+        <a class="w95-btn big primary bezel-raised" href="https://github.com/mateuschaves/habit-manager-95" target="_blank" rel="noopener"><span>▸ Clonar no GitHub</span></a>
+        <a class="w95-btn big bezel-raised" href="https://github.com/mateuschaves/habit-manager-95#começando" target="_blank" rel="noopener">Como rodar</a>
+      </div>
+      <p class="legend-tip" style="margin-top:24px">
+        Design system + screenshots via claude.ai/design · Fontes: Pixelify Sans &amp; VT323 · Licença MIT
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══ TASKBAR ═══════════════════════════════════════════════════════ -->
+<nav class="taskbar bezel-raised" aria-label="Barra de tarefas">
+  <a class="start-btn bezel-raised" href="#topo">
+    <span class="flag" aria-hidden="true">
+      <i style="background:#ff0000"></i><i style="background:#00ff00"></i>
+      <i style="background:#0000ff"></i><i style="background:#ffff00"></i>
+    </span>
+    Iniciar
+  </a>
+  <div class="tasks">
+    <a class="bezel-pressed" href="#processos">Processos</a>
+    <a class="bezel-raised" href="#bsod">BSOD</a>
+    <a class="bezel-raised" href="#desempenho">Desempenho</a>
+    <a class="bezel-raised" href="#setup">Setup</a>
+    <a class="bezel-raised" href="#offline">Offline</a>
+  </div>
+  <div class="tray bezel-thin-inset">
+    <span class="clock-wrap" id="clock">14:32</span>
+  </div>
+</nav>
+
+<script>
+/* Ícones pixel-art 14×14 — mesmo espírito do design system */
+const ICONS = {
+  water:   '<rect x="6" y="1" width="2" height="2"/><rect x="5" y="3" width="4" height="2"/><rect x="4" y="5" width="6" height="2"/><rect x="3" y="7" width="8" height="4"/><rect x="4" y="11" width="6" height="2"/>',
+  run:     '<rect x="7" y="1" width="3" height="3"/><rect x="5" y="4" width="5" height="2"/><rect x="3" y="6" width="3" height="2"/><rect x="6" y="6" width="4" height="2"/><rect x="7" y="8" width="2" height="3"/><rect x="9" y="11" width="3" height="2"/><rect x="4" y="9" width="3" height="2"/><rect x="2" y="11" width="3" height="2"/>',
+  food:    '<rect x="2" y="2" width="2" height="6"/><rect x="5" y="2" width="2" height="6"/><rect x="3" y="8" width="2" height="4"/><rect x="9" y="2" width="3" height="6"/><rect x="10" y="8" width="2" height="4"/>',
+  book:    '<rect x="2" y="2" width="10" height="10"/><rect x="3" y="3" width="8" height="8" fill="#fff"/><rect x="7" y="3" width="1" height="8"/><rect x="4" y="5" width="2" height="1"/><rect x="9" y="5" width="2" height="1"/>',
+  sleep:   '<rect x="3" y="3" width="6" height="6"/><rect x="3" y="3" width="4" height="4" fill="#fff"/><rect x="8" y="2" width="3" height="1"/><rect x="9" y="3" width="2" height="1"/><rect x="8" y="4" width="3" height="1"/>',
+  exercise:'<rect x="1" y="5" width="2" height="4"/><rect x="3" y="6" width="2" height="2"/><rect x="5" y="6" width="4" height="2"/><rect x="9" y="6" width="2" height="2"/><rect x="11" y="5" width="2" height="4"/>',
+  meditate:'<rect x="6" y="1" width="2" height="2"/><rect x="5" y="3" width="4" height="3"/><rect x="3" y="6" width="8" height="2"/><rect x="2" y="8" width="10" height="3"/>',
+  study:   '<rect x="2" y="3" width="10" height="2"/><rect x="6" y="5" width="2" height="3"/><rect x="3" y="8" width="8" height="3"/>',
+  exe:     '<rect x="2" y="2" width="10" height="10"/><rect x="3" y="3" width="8" height="8" fill="#c0c0c0"/><rect x="3" y="3" width="8" height="2" fill="#000080"/>',
+};
+function icon(name, color){
+  return '<svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges" style="flex:0 0 14px">'
+    + '<g fill="'+(color||'#000080')+'">'+ICONS[name]+'</g></svg>';
+}
+
+const STATUS = {
+  running:{c:'#008000',d:'#00ff00',t:'Rodando'},
+  pending:{c:'#a07000',d:'#ffc000',t:'Pendente'},
+  crashed:{c:'#800000',d:'#ff0000',t:'Não responde'},
+  paused: {c:'#404040',d:'#a0a0a0',t:'Suspenso'},
+  done:   {c:'#000080',d:'#0080ff',t:'Concluído'},
+};
+const PROCESSES = [
+  {ic:'water',   col:'#0000c0', n:'hidratar.exe',  pid:1025, mem:' 64 KB', up:'47d',  st:'running'},
+  {ic:'run',     col:'#800000', n:'correr.exe',    pid:1024, mem:' 14 KB', up:'12d',  st:'done'},
+  {ic:'food',    col:'#008000', n:'comer-bem.exe', pid:1031, mem:' 32 KB', up:'30d',  st:'done'},
+  {ic:'book',    col:'#000080', n:'ler.exe',       pid:1026, mem:' 32 KB', up:'3d',   st:'pending'},
+  {ic:'sleep',   col:'#404080', n:'dormir.exe',    pid:1028, mem:' 64 KB', up:'21d',  st:'pending'},
+  {ic:'exercise',col:'#806000', n:'malhar.exe',    pid:1029, mem:'128 KB', up:'8d',   st:'pending'},
+  {ic:'meditate',col:'#800080', n:'meditar.exe',   pid:1027, mem:' 16 KB', up:'0d',   st:'crashed'},
+  {ic:'study',   col:'#006080', n:'estudar.exe',   pid:1030, mem:'256 KB', up:'5d',   st:'paused'},
+  {ic:'exe',     col:'#404040', n:'system.idle',   pid:0,    mem:'  1 KB', up:'219d', st:'running'},
+];
+function renderProcs(el, selIndex){
+  el.innerHTML = PROCESSES.map((p,i)=>{
+    const s = STATUS[p.st];
+    const sel = i===selIndex;
+    return '<div class="proc-row'+(sel?' sel':'')+'">'
+      + '<div>'+icon(p.ic, sel?'#fff':p.col)+'<span class="mono">'+p.n+'</span></div>'
+      + '<div class="r"><span class="mono">'+String(p.pid).padStart(4,'0')+'</span></div>'
+      + '<div class="r"><span class="mono" style="white-space:pre">'+p.mem+'</span></div>'
+      + '<div class="r"><span class="mono">'+p.up+'</span></div>'
+      + '<div><span class="status"><span class="dot" style="background:'+s.d+'"></span>'
+      + '<span style="color:'+(sel?'#fff':s.c)+'">'+s.t+'</span></span></div>'
+      + '</div>';
+  }).join('');
+}
+renderProcs(document.getElementById('proc-list'), 0);
+renderProcs(document.getElementById('proc-list-2'), 6);
+
+/* Gráficos de desempenho (mesmos dados do design system) */
+function bars(id, data, color){
+  const max = Math.max.apply(null, data);
+  document.querySelector('#'+id+' .bars').innerHTML =
+    data.map(v=>'<i style="height:'+((v/max)*100)+'%;background:'+color+'"></i>').join('');
+}
+bars('g1', [82,71,88,92,65,78,95,89,81,73,92,88], '#00ff00');
+bars('g2', [40,65,80,72,88,60,75], '#00ffff');
+
+/* Ícones do wizard */
+['water','run','meditate','book','exe'].forEach((n,i)=>{
+  const e = document.getElementById('wz-i'+(i+1));
+  e.innerHTML = icon(n, i===0 ? '#fff' : '#000080');
+});
+
+/* Relógio da taskbar */
+function tick(){
+  const d = new Date();
+  document.getElementById('clock').textContent =
+    String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+tick(); setInterval(tick, 10000);
+</script>
+</body>
+</html>
