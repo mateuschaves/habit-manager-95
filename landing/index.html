@@ -18,14 +18,14 @@
    ====================================================================== */
 @font-face {
   font-family: 'MS Sans Serif';
-  src: url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif.woff2') format('woff2'),
-       url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif.woff') format('woff');
+  src: url('fonts/ms_sans_serif.woff2') format('woff2'),
+       url('fonts/ms_sans_serif.woff') format('woff');
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: 'MS Sans Serif';
-  src: url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif_bold.woff2') format('woff2'),
-       url('https://unpkg.com/98.css@0.1.20/dist/ms_sans_serif_bold.woff') format('woff');
+  src: url('fonts/ms_sans_serif_bold.woff2') format('woff2'),
+       url('fonts/ms_sans_serif_bold.woff') format('woff');
   font-weight: 700; font-style: normal; font-display: swap;
 }
 
@@ -387,7 +387,7 @@ hr.hr-pixel {
     <div class="title-bar">
       <div class="title-bar-text">
         <span aria-hidden="true" style="display:inline-flex">
-          <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges">
+          <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true" focusable="false">
             <rect x="1" y="2" width="12" height="10" fill="#fff" stroke="#000"/>
             <rect x="1" y="2" width="12" height="3" fill="#000080"/>
             <rect x="3" y="7" width="3" height="3" fill="#008000"/>
@@ -396,10 +396,10 @@ hr.hr-pixel {
         </span>
         <span>Gerenciador de Hábitos — Habit Manager 95</span>
       </div>
-      <div class="title-bar-controls">
-        <button class="title-bar-btn bezel-raised" aria-label="Minimizar">_</button>
-        <button class="title-bar-btn bezel-raised" aria-label="Maximizar">▢</button>
-        <button class="title-bar-btn bezel-raised" style="margin-left:2px" aria-label="Fechar">✕</button>
+      <div class="title-bar-controls" aria-hidden="true">
+        <span class="title-bar-btn bezel-raised">_</span>
+        <span class="title-bar-btn bezel-raised">▢</span>
+        <span class="title-bar-btn bezel-raised" style="margin-left:2px">✕</span>
       </div>
     </div>
     <div class="menu-bar">
@@ -433,7 +433,7 @@ hr.hr-pixel {
           </div>
           <div class="tab-pane bezel-thin-raised">
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;font-size:11px">
-              <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges"><rect x="1" y="2" width="12" height="10" fill="#fff" stroke="#000"/><rect x="1" y="2" width="12" height="3" fill="#000080"/><rect x="3" y="7" width="2" height="3" fill="#008000"/><rect x="9" y="7" width="2" height="3" fill="#800000"/></svg>
+              <svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><rect x="1" y="2" width="12" height="10" fill="#fff" stroke="#000"/><rect x="1" y="2" width="12" height="3" fill="#000080"/><rect x="3" y="7" width="2" height="3" fill="#008000"/><rect x="9" y="7" width="2" height="3" fill="#800000"/></svg>
               <span>9 processos ativos · 1 travado · 1 suspenso</span>
             </div>
             <div class="col-headers">
@@ -459,7 +459,7 @@ hr.hr-pixel {
   <!-- ══ 01 · PROCESSOS ════════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="processos">
     <div class="title-bar"><div class="title-bar-text">01 · Processos</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="feature">
@@ -486,7 +486,7 @@ hr.hr-pixel {
   <!-- ══ 02 · BSOD ═════════════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="bsod">
     <div class="title-bar"><div class="title-bar-text">02 · Streak quebrado</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="feature rev">
@@ -525,7 +525,7 @@ hr.hr-pixel {
   <!-- ══ 03 · DESEMPENHO ═══════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="desempenho">
     <div class="title-bar"><div class="title-bar-text">03 · grafico.exe</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="feature">
@@ -566,7 +566,7 @@ hr.hr-pixel {
   <!-- ══ 04 · SETUP WIZARD ═════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="setup">
     <div class="title-bar"><div class="title-bar-text">04 · A:\install.exe</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="feature rev">
@@ -624,7 +624,7 @@ hr.hr-pixel {
   <!-- ══ 05 · OFFLINE / PRIVACY ════════════════════════════════════ -->
   <section class="window bezel-raised win" id="offline">
     <div class="title-bar"><div class="title-bar-text">05 · C:\users\voce</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="feature">
@@ -654,7 +654,7 @@ hr.hr-pixel {
   <!-- ══ STACK ═════════════════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="stack">
     <div class="title-bar"><div class="title-bar-text">Propriedades do Sistema</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">_</button><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">_</span><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body">
       <div class="section-head"><span class="idx">specs / stack.sys</span><h2>Construído pra durar 30 anos</h2></div>
@@ -676,7 +676,7 @@ hr.hr-pixel {
   <!-- ══ DOWNLOAD ══════════════════════════════════════════════════ -->
   <section class="window bezel-raised win" id="download">
     <div class="title-bar"><div class="title-bar-text">Executar</div>
-      <div class="title-bar-controls"><button class="title-bar-btn bezel-raised">✕</button></div>
+      <div class="title-bar-controls" aria-hidden="true"><span class="title-bar-btn bezel-raised">✕</span></div>
     </div>
     <div class="body" style="text-align:center;padding:34px 18px">
       <img src="icon.png" alt="Habit Manager 95" width="84" height="84" class="bezel-raised" style="padding:4px;background:#fff"/>
@@ -730,7 +730,7 @@ const ICONS = {
   exe:     '<rect x="2" y="2" width="10" height="10"/><rect x="3" y="3" width="8" height="8" fill="#c0c0c0"/><rect x="3" y="3" width="8" height="2" fill="#000080"/>',
 };
 function icon(name, color){
-  return '<svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges" style="flex:0 0 14px">'
+  return '<svg width="14" height="14" viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true" focusable="false" style="flex:0 0 14px">'
     + '<g fill="'+(color||'#000080')+'">'+ICONS[name]+'</g></svg>';
 }
 
