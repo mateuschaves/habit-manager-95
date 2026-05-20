@@ -15,8 +15,6 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.wazowsky.habitmanager95",
-      "ascAppId": "6770595838",
-      "appleTeamId": "4KWUX6ULKJ",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
