@@ -354,10 +354,65 @@ hr.hr-pixel {
     var(--hm-border-light) 1px, var(--hm-border-light) 2px);
 }
 
+/* ── Privacy page ───────────────────────────────────────────────────── */
+.privacy { display: block; }
+.privacy .section-head { margin-bottom: 14px; }
+
+.privacy-meta {
+  display: flex; flex-wrap: wrap; gap: 12px 24px;
+  justify-content: space-between; align-items: center;
+  background: #fff;
+  border-top: 1px solid var(--hm-border-dark);
+  border-left: 1px solid var(--hm-border-dark);
+  border-right: 1px solid var(--hm-border-light);
+  border-bottom: 1px solid var(--hm-border-light);
+  padding: 8px 10px; font-size: 12px; margin: 0 0 18px;
+  font-family: var(--hm-font-mono);
+}
+.privacy-meta time { font-family: var(--hm-font-mono); }
+.lang-switch { display: inline-flex; gap: 8px; align-items: center; }
+.lang-switch a {
+  color: var(--hm-selection-bg); text-decoration: underline;
+}
+.lang-switch a.lang-on {
+  background: var(--hm-selection-bg); color: var(--hm-selection-fg);
+  text-decoration: none; padding: 1px 6px;
+}
+
+.privacy-body { display: flex; flex-direction: column; gap: 18px; }
+.privacy-body section { scroll-margin-top: 14px; }
+.privacy-body h3 {
+  font-size: 16px; margin: 0 0 6px;
+  background: var(--hm-title-bar); color: var(--hm-text-on-dark);
+  padding: 2px 8px; display: inline-block;
+}
+.privacy-body p {
+  font-size: 14px; line-height: 1.55; margin: 0 0 8px;
+  max-width: 70ch;
+}
+.privacy-body a { color: var(--hm-selection-bg); }
+.privacy-body .code {
+  font-family: var(--hm-font-mono); font-size: 13px;
+  background: #fff;
+  border: 1px solid var(--hm-border-dark);
+  padding: 0 4px;
+}
+.privacy-body ul.dotlist { margin-bottom: 8px; }
+
+.privacy-foot {
+  margin-top: 22px;
+  border-top: 1px solid var(--hm-border-dark);
+  border-bottom: 1px solid var(--hm-border-light);
+  padding-top: 12px;
+}
+.privacy-foot p { font-size: 13px; margin: 0 0 8px; max-width: 70ch; }
+.privacy-foot a { color: var(--hm-selection-bg); }
+
 @media (max-width: 860px) {
   .hero-grid, .feature { grid-template-columns: 1fr; }
   .feature.rev .copy { order: 0; }
   h1.headline { font-size: 34px; }
   .section-head h2 { font-size: 24px; }
   .tray .clock-wrap { display: none; }
+  .privacy-meta { flex-direction: column; align-items: flex-start; }
 }
